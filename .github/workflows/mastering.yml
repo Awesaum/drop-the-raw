@@ -1,0 +1,74 @@
+name: Drop The Raw - Headless Mastering Foundry
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+  checks: write
+
+jobs:
+  mastering:
+    name: Autonomous Headless Mastering
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]') && github.actor != 'drop-the-raw-bot'"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run Migration Replay Gate
+        run: npm run test:migrations
+
+      - name: Run Baseline Qualification Tests
+        run: npm test
+
+      - name: Execute Headless Kilo Code CLI
+        if: env.OPENROUTER_API_KEY != ''
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          echo "▶ Installing Kilo Code CLI (@kilocode/cli)..."
+          npm install -g @kilocode/cli
+          echo "▶ Triggering autonomous non-interactive mastering run..."
+          kilo run \
+            --mode code \
+            --prompt "You are the Headless Autonomous Engineer for drop-the-raw. Inspect recent commits. Refactor prototype code into modular clean architecture, enforce Zero Trust controls (robots.txt, WAF), and write comprehensive unit tests in test/. Ensure npm test passes with zero failures."
+
+      - name: Post-Mastering Test Verification
+        run: npm test
+
+      - name: Commit Mastered Artifacts (If Modified)
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "▶ Changes detected post-mastering. Committing to main..."
+            git config --local user.name "drop-the-raw-bot"
+            git config --local user.email "bot@company.help"
+            git add -A
+            git commit -m "chore(mastering): autonomous refactor and hardening [skip ci]"
+            git push origin main
+          else
+            echo "✔ Clean tree. No refactor changes required."
+          fi
+
+      - name: Publish Foundry Summary
+        run: |
+          echo "### 🚀 Drop The Raw — Mastering Gate Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: Passed ✅" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Pipeline**: Zero-Trust & Migration Replay Verified" >> $GITHUB_STEP_SUMMARY
+          if [ -z "${{ secrets.OPENROUTER_API_KEY }}" ]; then
+            echo "- **Note**: \`OPENROUTER_API_KEY\` not set. To activate autonomous Kilo refactoring, add it to Repository Secrets." >> $GITHUB_STEP_SUMMARY
+          fi

@@ -1,0 +1,20 @@
+{
+  "name": "drop-the-raw",
+  "version": "1.0.0",
+  "description": "Unfiltered vibe code in. Mastered production software out. Flagship starter kit for Artificial Unintelligence.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "test:migrations": "node scripts/test-migrations.mjs",
+    "build": "node scripts/build.mjs"
+  },
+  "keywords": [
+    "autonomous-coding",
+    "kilo-cli",
+    "openrouter",
+    "cloudflare-workers",
+    "vibe-coding"
+  ],
+  "author": "Drew Saum (Awesaum)",
+  "license": "MIT"
+}
