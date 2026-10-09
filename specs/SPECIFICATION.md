@@ -96,15 +96,15 @@ kilo run \
 1. If `kilo run` refactors files, the runner runs `npm run test`.
 2. If tests pass, the runner commits changes as `drop-the-raw-bot [skip ci]`.
 
-### 5.3 Autonomous Incident Routing & Self-Healing (Zero-Inbox Protocol)
+### 5.3 Autonomous Incident Routing & Self-Healing (Operator Audit Protocol)
 1. **Tier-1 Self-Healing (`if: failure()` step)**:
    - When a test or build fails, the runner traps the diagnostic stack trace.
    - If `OPENROUTER_API_KEY` is present, the runner immediately re-invokes Kilo Code CLI in remediation mode with the failure logs.
    - If Kilo resolves the error and `npm test` passes, it commits the fix with `[skip ci]`, recovering the build autonomously.
-2. **Autonomous Incident Ticket (Zero Human Email Spam)**:
-   - If the error cannot be self-healed, GitHub Actions uses `gh issue create` to open an automated incident ticket tagged `🚨 [AUTONOMOUS INCIDENT]`.
-   - The ticket logs the failing commit, run URL, and stack trace to the repository's internal issue board for the headless team.
-   - Human operators mute personal email alerts under GitHub Notification settings; all failures remain inside the autonomous loop.
+2. **Operator Audit Loop (Email Notification Checkpoint)**:
+   - Operator retains standard GitHub Actions email notifications as an audit signal.
+   - When an alert arrives, the operator opens the Actions Run log to verify how the headless engineering team self-healed the error and moved past the roadblock.
+   - If a failure cannot be resolved autonomously, GitHub Actions logs an automated incident ticket tagged `🚨 [AUTONOMOUS INCIDENT]` to the repository board for escalation.
 
 ---
 
