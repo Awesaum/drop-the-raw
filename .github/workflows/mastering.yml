@@ -36,7 +36,7 @@ jobs:
         run: npm test
 
       - name: Execute Headless Kilo Code CLI
-        if: env.OPENROUTER_API_KEY != ''
+        if: "${{ secrets.OPENROUTER_API_KEY != '' }}"
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: |
@@ -71,4 +71,6 @@ jobs:
           echo "- **Pipeline**: Zero-Trust & Migration Replay Verified" >> $GITHUB_STEP_SUMMARY
           if [ -z "${{ secrets.OPENROUTER_API_KEY }}" ]; then
             echo "- **Note**: \`OPENROUTER_API_KEY\` not set. To activate autonomous Kilo refactoring, add it to Repository Secrets." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- **Kilo Agent**: Active via OpenRouter Wholesale Routing" >> $GITHUB_STEP_SUMMARY
           fi
