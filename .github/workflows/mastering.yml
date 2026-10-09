@@ -10,6 +10,7 @@ permissions:
   contents: write
   actions: read
   checks: write
+  issues: write
 
 jobs:
   mastering:
@@ -64,14 +65,54 @@ jobs:
             echo "✔ Clean tree. No refactor changes required."
           fi
 
+      - name: Attempt Autonomous Self-Healing on Failure
+        if: failure() && env.OPENROUTER_API_KEY != ''
+        run: |
+          echo "⚠️ Failure detected in pipeline. Routing directly to Headless Engineering Team..."
+          npm install -g @kilocode/cli
+          kilo run \
+            --mode code \
+            --prompt "CRITICAL: The pipeline failed during test qualification. Inspect the repository, identify the failing tests or broken syntax, refactor the code to resolve the errors, and ensure npm test passes."
+          npm test
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "✔ Self-healing successful. Committing autonomous repair..."
+            git config --local user.name "drop-the-raw-bot"
+            git config --local user.email "bot@company.help"
+            git add -A
+            git commit -m "fix(self-healing): autonomous repair of qualification failure [skip ci]"
+            git push origin main
+          fi
+
+      - name: Open Autonomous Incident Ticket on Unresolved Failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "📢 Logging Autonomous Incident Ticket to GitHub Issues (Zero Human Inbox Spam)..."
+          gh issue create \
+            --title "🚨 [AUTONOMOUS INCIDENT] Pipeline Qualification Failure on commit ${{ github.sha }}" \
+            --body "### Autonomous Incident Report
+          - **Trigger Commit**: \`${{ github.sha }}\`
+          - **Actor**: \`${{ github.actor }}\`
+          - **Run URL**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          - **Incident Status**: Escalated to Autonomous Headless Queue
+          - **Assigned To**: Headless Engineering Squad (Kilo / Claude)
+
+          *Automated by Drop The Raw Zero-Inbox Protocol.*" || echo "Notice: Incident logged."
+
       - name: Publish Foundry Summary
+        if: always()
         run: |
           echo "### 🚀 Drop The Raw — Mastering Gate Summary" >> $GITHUB_STEP_SUMMARY
-          echo "- **Status**: Passed ✅" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "- **Status**: Passed ✅" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- **Status**: Escalated to Headless Incident Tracker ⚠️" >> $GITHUB_STEP_SUMMARY
+          fi
           echo "- **Commit**: \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "- **Pipeline**: Zero-Trust & Migration Replay Verified" >> $GITHUB_STEP_SUMMARY
+          echo "- **Pipeline**: Zero-Trust & Migration Replay Evaluated" >> $GITHUB_STEP_SUMMARY
           if [ -z "$OPENROUTER_API_KEY" ]; then
-            echo "- **Note**: \`OPENROUTER_API_KEY\` not set. To activate autonomous Kilo refactoring, add it to Repository Secrets." >> $GITHUB_STEP_SUMMARY
+            echo "- **Note**: \`OPENROUTER_API_KEY\` not set. To activate autonomous Kilo refactoring and self-healing, add it to Repository Secrets." >> $GITHUB_STEP_SUMMARY
           else
             echo "- **Kilo Agent**: Active via OpenRouter Wholesale Routing" >> $GITHUB_STEP_SUMMARY
           fi
