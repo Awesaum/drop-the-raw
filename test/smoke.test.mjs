@@ -52,6 +52,11 @@ test('drop-the-raw smoke test', async (t) => {
     assert.ok(existsSync(buildPath), 'scripts/build.mjs must exist');
   });
 
+  await t.test('scripts/setup-runners.mjs exists and is valid module', () => {
+    const setupPath = resolve(process.cwd(), 'scripts/setup-runners.mjs');
+    assert.ok(existsSync(setupPath), 'scripts/setup-runners.mjs must exist');
+  });
+
   await t.test('specs/CONCEPT.md readiness gate is armed true', () => {
     const conceptPath = resolve(process.cwd(), 'specs/CONCEPT.md');
     const content = readFileSync(conceptPath, 'utf8');

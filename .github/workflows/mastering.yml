@@ -49,33 +49,7 @@ jobs:
           echo "▶ Installing OpenCode CLI (opencode-ai)..."
           npm install -g opencode-ai || curl -fsSL https://opencode.ai/install | bash
           echo "▶ Generating runtime Kilo & OpenCode configurations with wholesale credentials..."
-          mkdir -p ~/.config/kilo ~/.config/opencode
-          cat <<EOF > ~/.config/kilo/kilo.json
-{
-  "provider": {
-    "openrouter": {
-      "options": {
-        "apiKey": "${OPENROUTER_API_KEY}"
-      }
-    }
-  }
-}
-EOF
-
-          cat <<EOF > ~/.config/opencode/opencode.json
-{
-  "\$schema": "https://opencode.ai/config.json",
-  "model": "openrouter/anthropic/claude-3.7-sonnet",
-  "providers": {
-    "openrouter": {
-      "settings": {
-        "baseURL": "https://openrouter.ai/api/v1",
-        "apiKey": "${OPENROUTER_API_KEY}"
-      }
-    }
-  }
-}
-EOF
+          node scripts/setup-runners.mjs
           echo "✔ Headless autonomous coding squad installed and dynamically configured."
 
       - name: Execute Headless Autonomous Mastering (Kilo & OpenCode)
