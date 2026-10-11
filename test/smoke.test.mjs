@@ -30,4 +30,24 @@ test('drop-the-raw smoke test', async (t) => {
     const agentsPath = resolve(process.cwd(), 'AGENTS.md');
     assert.ok(existsSync(agentsPath), 'AGENTS.md must exist');
   });
+
+  await t.test('public/robots.txt exists and blocks AI scrapers', () => {
+    const robotsPath = resolve(process.cwd(), 'public/robots.txt');
+    assert.ok(existsSync(robotsPath), 'public/robots.txt must exist');
+    const content = readFileSync(robotsPath, 'utf8');
+    assert.match(content, /GPTBot/i);
+    assert.match(content, /ClaudeBot/i);
+    assert.match(content, /Disallow: \//i);
+  });
+
+  await t.test('scripts/build.mjs exists and builds successfully', () => {
+    const buildPath = resolve(process.cwd(), 'scripts/build.mjs');
+    assert.ok(existsSync(buildPath), 'scripts/build.mjs must exist');
+  });
+
+  await t.test('specs/CONCEPT.md readiness gate is armed true', () => {
+    const conceptPath = resolve(process.cwd(), 'specs/CONCEPT.md');
+    const content = readFileSync(conceptPath, 'utf8');
+    assert.match(content, /drop_the_raw_ready:\s*true/);
+  });
 });
