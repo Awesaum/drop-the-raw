@@ -30,7 +30,7 @@ const kiloConfig = {
 
 const opencodeConfig = {
   $schema: 'https://opencode.ai/config.json',
-  model: 'openrouter/anthropic/claude-3.7-sonnet',
+  model: 'openrouter/anthropic/claude-3.5-sonnet',
   providers: {
     openrouter: {
       settings: {
