@@ -1,3 +1,13 @@
+---
+project_slug: drop-the-raw
+drop_the_raw_ready: false
+requirements:
+  kilo_cli: ready
+  opencode: ready
+  workflow: ready
+  secrets: pending
+---
+
 # CONCEPT: drop-the-raw
 
 > *"One take. No script. Drop the raw into the booth and let the mastering house turn it into platinum."*

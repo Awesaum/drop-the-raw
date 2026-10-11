@@ -77,26 +77,31 @@ flowchart TD
 
 ---
 
-## 5. Kilo Code CLI Execution Specification
+## 5. Autonomous Coding Squad Execution Specification (Kilo CLI & OpenCode)
 
 ### 5.1 Headless Command Invocations
-When triggered on GitHub Actions, the runner executes Kilo Code CLI non-interactively:
+When triggered on GitHub Actions, the runner installs and initializes both **Kilo Code CLI** (`@kilocode/cli`) and **OpenCode CLI** (`opencode-ai`):
 
 ```bash
-# 1. Install Kilo Code CLI
+# 1. Install Autonomous Coding Squad
 npm install -g @kilocode/cli
+npm install -g opencode-ai || curl -fsSL https://opencode.ai/install | bash
 
 # 2. Execute Headless Mastering Run
 kilo run \
   --mode code \
-  --prompt "Analyze unvetted code changes. Refactor into modular architecture (<50 lines per module). Generate comprehensive BDD vitest unit tests. Enforce robots.txt AI scraping protections. Ensure npm run test passes with 100% success."
+  --prompt "Analyze unvetted code changes. Refactor into modular architecture (<50 lines per module). Generate comprehensive BDD vitest unit tests. Enforce robots.txt AI scraping protections. Ensure npm run test passes with 100% success." || \
+opencode run --standalone "Refactor prototype code into modular clean architecture, enforce Zero Trust controls, and ensure npm test passes."
 ```
 
-### 5.2 Commit & Promotion Gate
-1. If `kilo run` refactors files, the runner runs `npm run test`.
+### 5.2 OpenCode Configuration (`opencode.json` & `AGENTS.md`)
+OpenCode uses `opencode.json` at root to authenticate with OpenRouter wholesale models (`openrouter/anthropic/claude-3.7-sonnet`) and consumes `AGENTS.md` to inherit role directives for Architect, Coder, Auditor, and Hacker.
+
+### 5.3 Commit & Promotion Gate
+1. If the autonomous squad refactors files, the runner runs `npm run test`.
 2. If tests pass, the runner commits changes as `drop-the-raw-bot [skip ci]`.
 
-### 5.3 Autonomous Incident Routing & Self-Healing (Operator Audit Protocol)
+### 5.4 Autonomous Incident Routing & Self-Healing (Operator Audit Protocol)
 1. **Tier-1 Self-Healing (`if: failure()` step)**:
    - When a test or build fails, the runner traps the diagnostic stack trace.
    - If `OPENROUTER_API_KEY` is present, the runner immediately re-invokes Kilo Code CLI in remediation mode with the failure logs.
@@ -144,7 +149,9 @@ kilo run \
   - **Then** the crawler must receive a `Disallow: /` response.
 
 ### 8.3 Implementation Tasks
-- [ ] Initialize root `package.json` with scripts: `test`, `build`, `test:migrations`.
-- [ ] Scaffold `.github/workflows/mastering.yml` with Kilo Code CLI and OpenRouter bindings.
-- [ ] Implement `robots.txt` scraper defense.
+- [x] Initialize root `package.json` with scripts: `test`, `build`, `test:migrations`.
+- [x] Scaffold `.github/workflows/mastering.yml` with Kilo Code CLI, OpenCode runtime, and OpenRouter bindings.
+- [x] Implement `robots.txt` scraper defense.
+- [x] Configure `opencode.json` and `AGENTS.md` for OpenCode autonomous execution.
+- [ ] Bind `OPENROUTER_API_KEY` in GitHub Repository Secrets.
 - [ ] Scaffold `specs/APPROVAL.md` approval record.

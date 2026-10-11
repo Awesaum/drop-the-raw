@@ -12,11 +12,22 @@ test('drop-the-raw smoke test', async (t) => {
     assert.match(content, /Awesaum/i);
   });
 
-  await t.test('SPECIFICATION.md exists and specifies Kilo Code CLI', () => {
+  await t.test('SPECIFICATION.md exists and specifies Kilo Code CLI & OpenCode', () => {
     const specPath = resolve(process.cwd(), 'specs/SPECIFICATION.md');
     assert.ok(existsSync(specPath), 'specs/SPECIFICATION.md must exist');
     const content = readFileSync(specPath, 'utf8');
     assert.match(content, /@kilocode\/cli/i);
+    assert.match(content, /opencode/i);
     assert.match(content, /OPENROUTER_API_KEY/i);
+  });
+
+  await t.test('opencode.json and AGENTS.md exist and configure OpenRouter wholesale routing', () => {
+    const opencodePath = resolve(process.cwd(), 'opencode.json');
+    assert.ok(existsSync(opencodePath), 'opencode.json must exist');
+    const opencodeConfig = JSON.parse(readFileSync(opencodePath, 'utf8'));
+    assert.ok(opencodeConfig.providers?.openrouter, 'opencode.json must configure openrouter provider');
+
+    const agentsPath = resolve(process.cwd(), 'AGENTS.md');
+    assert.ok(existsSync(agentsPath), 'AGENTS.md must exist');
   });
 });
