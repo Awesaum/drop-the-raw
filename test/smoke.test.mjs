@@ -31,6 +31,13 @@ test('drop-the-raw smoke test', async (t) => {
     assert.ok(existsSync(agentsPath), 'AGENTS.md must exist');
   });
 
+  await t.test('.kilo/kilo.json exists and configures Kilo OpenRouter model routing', () => {
+    const kiloPath = resolve(process.cwd(), '.kilo/kilo.json');
+    assert.ok(existsSync(kiloPath), '.kilo/kilo.json must exist');
+    const kiloConfig = JSON.parse(readFileSync(kiloPath, 'utf8'));
+    assert.ok(kiloConfig.provider?.openrouter, '.kilo/kilo.json must configure openrouter provider');
+  });
+
   await t.test('public/robots.txt exists and blocks AI scrapers', () => {
     const robotsPath = resolve(process.cwd(), 'public/robots.txt');
     assert.ok(existsSync(robotsPath), 'public/robots.txt must exist');

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://kilocode.ai/config.json",
+  "provider": {
+    "openrouter": {
+      "apiKey": "{env:OPENROUTER_API_KEY}",
+      "models": {
+        "anthropic/claude-3.7-sonnet": {
+          "options": {
+            "provider": {
+              "order": ["Anthropic"],
+              "allow_fallbacks": true
+            }
+          }
+        },
+        "deepseek/deepseek-r1": {
+          "options": {
+            "allow_fallbacks": true
+          }
+        }
+      }
+    }
+  }
+}

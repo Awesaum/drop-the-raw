@@ -46,7 +46,10 @@ jobs:
           npm install -g @kilocode/cli
           echo "▶ Installing OpenCode CLI (opencode-ai)..."
           npm install -g opencode-ai || curl -fsSL https://opencode.ai/install | bash
-          echo "✔ Headless autonomous coding squad installed."
+          echo "▶ Syncing Kilo & OpenCode configurations..."
+          mkdir -p ~/.config/kilo
+          cp .kilo/kilo.json ~/.config/kilo/kilo.json || true
+          echo "✔ Headless autonomous coding squad installed and configured."
 
       - name: Execute Headless Autonomous Mastering (Kilo & OpenCode)
         if: env.OPENROUTER_API_KEY != ''
