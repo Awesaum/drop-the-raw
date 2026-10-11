@@ -1,11 +1,11 @@
 ---
 project_slug: drop-the-raw
-drop_the_raw_ready: false
+drop_the_raw_ready: true
 requirements:
   kilo_cli: ready
   opencode: ready
   workflow: ready
-  secrets: pending
+  secrets: ready
 ---
 
 # CONCEPT: drop-the-raw
