@@ -196,6 +196,29 @@
       color: #fff;
     }
 
+    .step-btn:disabled,
+    .step-btn.locked {
+      opacity: 0.35;
+      cursor: not-allowed !important;
+      pointer-events: none;
+      background: rgba(10, 12, 18, 0.45);
+      border-color: rgba(255, 255, 255, 0.04);
+      filter: grayscale(0.85);
+      box-shadow: none !important;
+    }
+
+    .step-btn.locked .step-num {
+      background: rgba(255, 255, 255, 0.03);
+      color: #6b7280;
+      border: 1px dashed rgba(255, 255, 255, 0.15);
+    }
+
+    .step-lock-icon {
+      font-size: 0.72rem;
+      margin-left: 0.3rem;
+      opacity: 0.8;
+    }
+
     .step-num {
       width: 32px;
       height: 32px;
@@ -657,26 +680,26 @@
     <!-- 1-2-3 Stepper Navigation -->
     <nav class="stepper">
       <button class="step-btn active" id="step-btn-1" onclick="switchTab(1)">
-        <div class="step-num">1</div>
+        <div class="step-num" id="step-num-1">1</div>
         <div class="step-text">
           <h4>Passcode & Target</h4>
-          <p>Verify gate & non-main</p>
+          <p id="step-sub-1">Verify gate & non-main</p>
         </div>
       </button>
 
-      <button class="step-btn" id="step-btn-2" onclick="switchTab(2)">
-        <div class="step-num">2</div>
+      <button class="step-btn locked" id="step-btn-2" onclick="switchTab(2)" disabled>
+        <div class="step-num" id="step-num-2">2</div>
         <div class="step-text">
-          <h4>The Raw Booth</h4>
-          <p>Inspect branch & drop</p>
+          <h4>The Raw Booth <span class="step-lock-icon" id="lock-icon-2">🔒</span></h4>
+          <p id="step-sub-2">Locked · Complete Step 1</p>
         </div>
       </button>
 
-      <button class="step-btn" id="step-btn-3" onclick="switchTab(3)">
-        <div class="step-num">3</div>
+      <button class="step-btn locked" id="step-btn-3" onclick="switchTab(3)" disabled>
+        <div class="step-num" id="step-num-3">3</div>
         <div class="step-text">
-          <h4>Review & Platinum</h4>
-          <p>Telemetry & merge PR</p>
+          <h4>Review & Platinum <span class="step-lock-icon" id="lock-icon-3">🔒</span></h4>
+          <p id="step-sub-3">Locked · Drop in Step 2</p>
         </div>
       </button>
     </nav>
@@ -848,7 +871,7 @@
   <!-- ========================================== -->
   <script>
     let currentTab = 1;
-    let step1Verified = false;
+    const completedSteps = new Set();
     let rawBranchReady = false;
 
     // Elements
@@ -881,43 +904,86 @@
       }
     }
 
-    // Tab Navigation
-    function switchTab(step) {
-      // Gate check: cannot skip to step 2 without verifying step 1
-      if (step === 2 && !step1Verified && !validateStep1Inputs()) {
-        alert('Please complete Step 1 (Passcode & Repository URL) first.');
-        return;
+    // Centralized Stepper Navigation & Locking Engine
+    function updateStepperNav() {
+      // Step 1: Always unlocked
+      const btn1 = document.getElementById('step-btn-1');
+      btn1.classList.toggle('active', currentTab === 1);
+      btn1.classList.toggle('completed', completedSteps.has(1));
+      if (completedSteps.has(1)) {
+        document.getElementById('step-num-1').innerHTML = '✓';
+        document.getElementById('step-sub-1').innerText = 'Completed';
+      } else {
+        document.getElementById('step-num-1').innerText = '1';
+        document.getElementById('step-sub-1').innerText = 'Verify gate & non-main';
       }
-      // Cannot skip to step 3 without dispatching or inspecting
-      if (step === 3 && !step1Verified) {
-        alert('Please complete Step 1 and Step 2 first.');
-        return;
+
+      // Step 2: Clickable ONLY if Step 1 has been completed
+      const btn2 = document.getElementById('step-btn-2');
+      const isStep2Unlocked = completedSteps.has(1);
+      btn2.disabled = !isStep2Unlocked;
+      btn2.classList.toggle('locked', !isStep2Unlocked);
+      btn2.classList.toggle('active', currentTab === 2);
+      btn2.classList.toggle('completed', completedSteps.has(2));
+      const lockIcon2 = document.getElementById('lock-icon-2');
+      if (lockIcon2) lockIcon2.style.display = isStep2Unlocked ? 'none' : 'inline';
+
+      if (completedSteps.has(2)) {
+        document.getElementById('step-num-2').innerHTML = '✓';
+        document.getElementById('step-sub-2').innerText = 'Completed';
+      } else if (isStep2Unlocked) {
+        document.getElementById('step-num-2').innerText = '2';
+        document.getElementById('step-sub-2').innerText = 'Inspect branch & drop';
+      } else {
+        document.getElementById('step-num-2').innerText = '2';
+        document.getElementById('step-sub-2').innerText = 'Locked · Complete Step 1';
+      }
+
+      // Step 3: Clickable ONLY if Step 2 has been completed
+      const btn3 = document.getElementById('step-btn-3');
+      const isStep3Unlocked = completedSteps.has(2);
+      btn3.disabled = !isStep3Unlocked;
+      btn3.classList.toggle('locked', !isStep3Unlocked);
+      btn3.classList.toggle('active', currentTab === 3);
+      btn3.classList.toggle('completed', completedSteps.has(3));
+      const lockIcon3 = document.getElementById('lock-icon-3');
+      if (lockIcon3) lockIcon3.style.display = isStep3Unlocked ? 'none' : 'inline';
+
+      if (completedSteps.has(3)) {
+        document.getElementById('step-num-3').innerHTML = '✓';
+        document.getElementById('step-sub-3').innerText = 'Completed';
+      } else if (isStep3Unlocked) {
+        document.getElementById('step-num-3').innerText = '3';
+        document.getElementById('step-sub-3').innerText = 'Telemetry & merge PR';
+      } else {
+        document.getElementById('step-num-3').innerText = '3';
+        document.getElementById('step-sub-3').innerText = 'Locked · Drop in Step 2';
+      }
+
+      // Tab Panels
+      for (let i = 1; i <= 3; i++) {
+        const panel = document.getElementById(`tab-panel-${i}`);
+        if (panel) panel.classList.toggle('active', i === currentTab);
+      }
+    }
+
+    // Tab Navigation - strictly blocked if target tab has not been unlocked
+    function switchTab(step) {
+      if (step === 2 && !completedSteps.has(1)) {
+        return; // Cannot click Step 2 until Step 1 is completed
+      }
+      if (step === 3 && !completedSteps.has(2)) {
+        return; // Cannot click Step 3 until Step 2 is completed
       }
 
       currentTab = step;
-
-      // Update Tab Panels
-      for (let i = 1; i <= 3; i++) {
-        const panel = document.getElementById(`tab-panel-${i}`);
-        const btn = document.getElementById(`step-btn-${i}`);
-        if (panel) panel.classList.toggle('active', i === step);
-        if (btn) btn.classList.toggle('active', i === step);
-      }
+      updateStepperNav();
 
       if (step === 2) {
         t2RepoLabel.innerText = repoInput.value.trim() || 'Awesaum/drop-the-raw';
         checkBranchStatus();
       } else if (step === 3) {
         fetchStatus();
-      }
-    }
-
-    function markStepCompleted(step) {
-      const btn = document.getElementById(`step-btn-${step}`);
-      if (btn) {
-        btn.classList.add('completed');
-        const num = btn.querySelector('.step-num');
-        if (num) num.innerHTML = '✓';
       }
     }
 
@@ -945,9 +1011,8 @@
       localStorage.setItem('drop_operator_key', keyInput.value.trim());
       localStorage.setItem('drop_repo_url', repoInput.value.trim());
 
-      step1Verified = true;
-      markStepCompleted(1);
-      log(`Step 1 Verified: Target ${repoInput.value.trim()} unlocked.`);
+      completedSteps.add(1);
+      log(`Step 1 Completed: Target ${repoInput.value.trim()} verified.`);
       switchTab(2);
     });
 
@@ -1088,7 +1153,8 @@
 
         if (res.ok) {
           log(`✔ SUCCESS: ${payload.message || 'Workflow dispatched'}`);
-          markStepCompleted(2);
+          completedSteps.add(2);
+          updateStepperNav();
           switchTab(3);
           alert(`🔥 Drop The Raw Dispatched!\n\nThe headless coding squad is mastering your raw code.\nFollow the activity log in Step 3 and merge the Pull Request into main.`);
         } else {
@@ -1142,11 +1208,8 @@
       }
     }
 
-    // Initial check on load
-    if (validateStep1Inputs()) {
-      step1Verified = true;
-      markStepCompleted(1);
-    }
+    // Initial locked state on load - steps 2 and 3 cannot be clicked until unlocked
+    updateStepperNav();
     fetchStatus();
     setInterval(fetchStatus, 12000);
   </script>
