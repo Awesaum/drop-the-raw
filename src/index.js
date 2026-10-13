@@ -4,15 +4,8 @@
  * Refactored from One-Take SHIT Code into production-grade modules
  */
 
-import { getSecurityHeaders } from './security/index.js';
-import { handleHealth, handleRobots, handle404 } from './core/index.js';
-import { handleSubscribe } from './api/subscribe.js';
-import { handleEscalate } from './api/escalate.js';
-import { handleStatus } from './api/status.js';
-import { handleDrop } from './api/drop.js';
-import { handleDropStatus } from './api/status.js';
-import { handleBranchCheck } from './api/branch-check.js';
-import { handleCreateBranch } from './api/create-branch.js';
+import { getSecurityHeaders, validateWAFRules } from './security/index.js';
+import { routeRequest } from './core/router.js';
 
 /**
  * Primary edge fetch handler for Cloudflare Workers / Node runtime
@@ -33,34 +26,24 @@ export async function handleRequest(request, env = {}) {
     return new Response(null, { status: 204, headers });
   }
 
-  let result;
-
-  // Route requests to modular handlers
-  if (path === '/health' && method === 'GET') {
-    result = await handleHealth(request, env);
-  } else if (path === '/api/status' && method === 'GET') {
-    result = await handleStatus(request, env);
-  } else if (path === '/api/drop' && method === 'POST') {
-    result = await handleDrop(request, env);
-  } else if (path === '/api/drop/status' && method === 'GET') {
-    result = await handleDropStatus(request, env);
-  } else if (path === '/api/drop/branch-status' && method === 'GET') {
-    result = await handleBranchCheck(request, env);
-  } else if (path === '/api/drop/create-branch' && method === 'POST') {
-    result = await handleCreateBranch(request, env);
-  } else if (path === '/api/subscribe' && method === 'POST') {
-    result = await handleSubscribe(request, env);
-  } else if (path === '/api/escalate' && method === 'POST') {
-    result = await handleEscalate(request, env);
-  } else if (path === '/robots.txt' && method === 'GET') {
-    // Special case: robots.txt returns Response directly
-    return await handleRobots(request, env);
-  } else {
-    // 404 fallback
-    result = handle404(path);
+  // WAF protection - validate request
+  const wafResult = await validateWAFRules(request);
+  if (wafResult) {
+    return new Response(JSON.stringify(wafResult.response), {
+      status: wafResult.status,
+      headers
+    });
   }
 
-  // Return formatted response
+  // Route request to appropriate handler
+  const result = await routeRequest(path, method, request, env);
+  
+  // Handle special responses (like robots.txt)
+  if (result instanceof Response) {
+    return result;
+  }
+
+  // Return formatted JSON response
   return new Response(JSON.stringify(result.response), {
     status: result.status,
     headers

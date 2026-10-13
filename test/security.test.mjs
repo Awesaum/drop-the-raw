@@ -20,8 +20,10 @@ test('Security module tests', async (t) => {
     assert.equal(headers['X-Content-Type-Options'], 'nosniff');
     assert.equal(headers['X-Frame-Options'], 'DENY');
     assert.equal(headers['X-XSS-Protection'], '1; mode=block');
-    assert.match(headers['Strict-Transport-Security'], /max-age=31536000/);
+    assert.match(headers['Strict-Transport-Security'], /max-age=63072000/);
     assert.equal(headers['Access-Control-Allow-Origin'], '*');
+    assert.match(headers['Content-Security-Policy'], /default-src 'self'/);
+    assert.match(headers['Permissions-Policy'], /geolocation=\(\)/);
   });
 
   await t.test('getRobotsTxt blocks AI scrapers', () => {
