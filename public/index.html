@@ -3,21 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>drop-the-raw | Autonomous Headless Mastering Foundry</title>
-  <meta name="description" content="Unfiltered vibe code in. Mastered production software out. Flagship starter kit for Artificial Unintelligence by Drew Saum." />
+  <title>Drop The Raw | Operator Control Console</title>
+  <meta name="description" content="Protected Headless Mastering Foundry Console. Master unvetted raw/staging code and open reviewable pull requests." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #090a0f;
-      --card-bg: rgba(18, 20, 29, 0.75);
+      --bg: #07090e;
+      --card-bg: rgba(15, 18, 28, 0.85);
       --card-border: rgba(255, 255, 255, 0.08);
       --accent: #6366f1;
-      --accent-glow: rgba(99, 102, 241, 0.35);
+      --accent-glow: rgba(99, 102, 241, 0.4);
       --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.35);
       --warning: #f59e0b;
       --danger: #ef4444;
+      --danger-glow: rgba(239, 68, 68, 0.35);
       --text: #f3f4f6;
       --text-muted: #9ca3af;
       --mono: 'JetBrains Mono', monospace;
@@ -33,27 +35,28 @@
     body {
       background-color: var(--bg);
       background-image: 
-        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.15) 0%, transparent 45%),
-        radial-gradient(circle at 85% 85%, rgba(16, 185, 129, 0.1) 0%, transparent 45%);
+        radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.18) 0%, transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(16, 185, 129, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
       color: var(--text);
       font-family: var(--sans);
       min-height: 100vh;
-      line-height: 1.6;
-      overflow-x: hidden;
       display: flex;
       flex-direction: column;
+      line-height: 1.5;
     }
 
     header {
-      padding: 1.5rem 2rem;
+      padding: 1.25rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid var(--card-border);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(16px);
       position: sticky;
       top: 0;
       z-index: 50;
+      background: rgba(7, 9, 14, 0.8);
     }
 
     .brand {
@@ -61,7 +64,7 @@
       align-items: center;
       gap: 0.75rem;
       font-weight: 700;
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       letter-spacing: -0.02em;
     }
 
@@ -70,186 +73,22 @@
       color: #fff;
       padding: 0.2rem 0.6rem;
       border-radius: 6px;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-weight: 600;
-      letter-spacing: 0.05em;
       text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
-    .nav-links {
-      display: flex;
-      gap: 1.5rem;
-      align-items: center;
-    }
-
-    .nav-link {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 0.9rem;
-      transition: color 0.2s;
-    }
-
-    .nav-link:hover {
-      color: var(--text);
-    }
-
-    main {
-      flex: 1;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 4rem 1.5rem;
-      width: 100%;
-    }
-
-    .hero {
-      text-align: center;
-      margin-bottom: 4rem;
-    }
-
-    .tagline {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(99, 102, 241, 0.12);
-      border: 1px solid rgba(99, 102, 241, 0.3);
-      color: #a5b4fc;
-      padding: 0.35rem 1rem;
-      border-radius: 999px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      margin-bottom: 1.5rem;
-    }
-
-    .hero h1 {
-      font-size: clamp(2.5rem, 5vw, 4rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.15;
-      margin-bottom: 1.25rem;
-      background: linear-gradient(to bottom right, #fff, #9ca3af);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero p {
-      font-size: 1.15rem;
-      color: var(--text-muted);
-      max-width: 680px;
-      margin: 0 auto 2.5rem auto;
-    }
-
-    .pipeline-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 4rem;
-    }
-
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 2rem;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.2s, border-color 0.2s;
-    }
-
-    .card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(99, 102, 241, 0.4);
-    }
-
-    .card-badge {
-      display: inline-block;
-      font-size: 0.75rem;
-      font-family: var(--mono);
-      color: #818cf8;
-      background: rgba(99, 102, 241, 0.1);
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-      margin-bottom: 1rem;
-    }
-
-    .card h2 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin-bottom: 0.75rem;
-    }
-
-    .card p {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .form-group {
-      margin-bottom: 1.25rem;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 500;
-      margin-bottom: 0.5rem;
-      color: var(--text-muted);
-    }
-
-    .input-field {
-      width: 100%;
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid var(--card-border);
-      color: var(--text);
-      font-family: var(--sans);
-      font-size: 0.95rem;
-      padding: 0.75rem 1rem;
-      border-radius: 8px;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    .input-field:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-glow);
-    }
-
-    .btn {
-      width: 100%;
-      background: linear-gradient(135deg, var(--accent), #4f46e5);
-      color: #fff;
-      border: none;
-      padding: 0.85rem 1.5rem;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      gap: 0.5rem;
-      transition: filter 0.2s, transform 0.1s;
-    }
-
-    .btn:hover {
-      filter: brightness(1.1);
-    }
-
-    .btn:active {
-      transform: scale(0.99);
-    }
-
-    .turnstile-box {
+    .auth-status-pill {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.6rem;
-      border: 1px dashed var(--card-border);
-      border-radius: 6px;
-      margin-bottom: 1rem;
       font-size: 0.8rem;
-      color: var(--text-muted);
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      font-family: var(--mono);
     }
 
     .status-dot {
@@ -260,56 +99,291 @@
       box-shadow: 0 0 8px var(--success);
     }
 
-    .console-box {
-      background: #000;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-      padding: 1rem;
-      font-family: var(--mono);
-      font-size: 0.85rem;
-      color: #a5b4fc;
-      height: 180px;
-      overflow-y: auto;
-      margin-top: 1rem;
+    .status-dot.locked {
+      background: var(--warning);
+      box-shadow: 0 0 8px var(--warning);
     }
 
-    /* Floating Escalate Button */
-    .floating-escalate {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      z-index: 100;
+    main {
+      flex: 1;
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+      width: 100%;
     }
 
-    .btn-escalate {
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.4);
-      color: #fca5a5;
-      padding: 0.65rem 1.25rem;
-      border-radius: 999px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-      transition: all 0.2s;
+    .top-hero {
+      margin-bottom: 2.5rem;
+      text-align: left;
+    }
+
+    .top-hero h1 {
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(to right, #fff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .top-hero p {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 720px;
+    }
+
+    /* Grid Layout */
+    .grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    @media (max-width: 880px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 2rem;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+      position: relative;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
       display: flex;
       align-items: center;
       gap: 0.5rem;
     }
 
-    .btn-escalate:hover {
-      background: rgba(239, 68, 68, 0.25);
-      border-color: #ef4444;
+    .pill {
+      font-size: 0.7rem;
+      font-family: var(--mono);
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .pill-safe {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .pill-active {
+      background: rgba(99, 102, 241, 0.15);
+      color: #a5b4fc;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #d1d5db;
+    }
+
+    .input-field {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.55);
+      border: 1px solid var(--card-border);
       color: #fff;
+      font-family: var(--mono);
+      font-size: 0.95rem;
+      padding: 0.85rem 1rem;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .input-field.error {
+      border-color: var(--danger);
+      box-shadow: 0 0 0 3px var(--danger-glow);
+    }
+
+    .presets {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .preset-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .preset-btn:hover {
+      background: rgba(99, 102, 241, 0.2);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    /* Safety Shield Card */
+    .safety-banner {
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      margin-bottom: 1.75rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      font-size: 0.85rem;
+      color: #a7f3d0;
+    }
+
+    .safety-banner.danger {
+      background: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.35);
+      color: #fca5a5;
+    }
+
+    .btn-drop {
+      width: 100%;
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: #fff;
+      border: none;
+      padding: 1.1rem;
+      border-radius: 10px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+      transition: all 0.2s;
+    }
+
+    .btn-drop:hover:not(:disabled) {
+      filter: brightness(1.15);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(99, 102, 241, 0.6);
+    }
+
+    .btn-drop:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      filter: grayscale(0.5);
+    }
+
+    /* PR & Review Station */
+    .pr-card {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s;
+    }
+
+    .pr-card:hover {
+      border-color: var(--accent);
+      background: rgba(99, 102, 241, 0.05);
+    }
+
+    .pr-info h4 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.2rem;
+    }
+
+    .pr-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-family: var(--mono);
+    }
+
+    .btn-merge {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.5rem 0.9rem;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: filter 0.15s;
+    }
+
+    .btn-merge:hover {
+      filter: brightness(1.15);
+    }
+
+    .console {
+      background: #000;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 1rem;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: #a5b4fc;
+      height: 200px;
+      overflow-y: auto;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
     }
 
     footer {
       border-top: 1px solid var(--card-border);
-      padding: 2rem;
+      padding: 1.5rem 2rem;
       text-align: center;
       font-size: 0.85rem;
       color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    footer a {
+      color: #a5b4fc;
+      text-decoration: none;
     }
   </style>
 </head>
@@ -318,87 +392,133 @@
   <header>
     <div class="brand">
       <span>drop-the-raw</span>
-      <span class="brand-badge">Headless Foundry</span>
+      <span class="brand-badge">Operator Console</span>
     </div>
-    <div class="nav-links">
-      <a href="https://github.com/Awesaum/drop-the-raw" target="_blank" class="nav-link">GitHub</a>
-      <a href="https://company.help" target="_blank" class="nav-link">Artificial Unintelligence</a>
+
+    <div class="auth-status-pill">
+      <span class="status-dot" id="auth-dot"></span>
+      <span id="auth-label">Operator Authenticated</span>
     </div>
   </header>
 
   <main>
-    <section class="hero">
-      <div class="tagline">
-        <span class="status-dot"></span>
-        <span>The KozarKane "One Take" Software Foundry</span>
-      </div>
-      <h1>Unfiltered vibe code in.<br />Mastered production software out.</h1>
+    <section class="top-hero">
+      <h1>Protected Headless Foundry</h1>
       <p>
-        Replace fragile $200/mo copilot seat subscriptions with headless wholesale intelligence on GitHub Actions. Hack fast locally, drop the raw with git push, and let the mastering house turn it into platinum.
+        Master raw vibe prototypes into production software without touching <code>main</code>. The autonomous squad refactors the staging branch, verifies tests, and opens a Pull Request for owner review.
       </p>
     </section>
 
-    <div class="pipeline-grid">
-      <!-- Newsletter Lead Capture -->
+    <div class="grid">
+      <!-- Left: Staging Dispatcher -->
       <div class="card">
-        <span class="card-badge">LEAD CAPTURE</span>
-        <h2>Artificial Unintelligence Dispatch</h2>
-        <p>Get weekly blueprints by Drew Saum on replacing human IT labor with autonomous headless squads.</p>
-        
-        <form id="subscribe-form">
+        <div class="card-header">
+          <div class="card-title">
+            <span>🚀 Staging Dispatch Station</span>
+          </div>
+          <span class="pill pill-safe">PROTECTED GATE</span>
+        </div>
+
+        <form id="drop-form">
           <div class="form-group">
-            <label for="sub-email">Operator Email Address</label>
-            <input type="email" id="sub-email" class="input-field" placeholder="you@company.help" required />
+            <label for="branch-input">Target Staging / Raw Branch</label>
+            <input 
+              type="text" 
+              id="branch-input" 
+              class="input-field" 
+              placeholder="e.g. staging or raw/prototype-1" 
+              value="staging" 
+              required 
+            />
+            <div class="presets">
+              <span class="preset-btn" onclick="setBranch('staging')">staging</span>
+              <span class="preset-btn" onclick="setBranch('raw/vibe-prototype')">raw/vibe-prototype</span>
+              <span class="preset-btn" onclick="setBranch('raw/feature-auth')">raw/feature-auth</span>
+            </div>
           </div>
 
-          <div class="turnstile-box">
-            <span class="status-dot"></span>
-            <span>Cloudflare Turnstile Zero-Trust Shield Active</span>
+          <div class="form-group">
+            <label for="key-input">Operator Passcode</label>
+            <input 
+              type="password" 
+              id="key-input" 
+              class="input-field" 
+              placeholder="Enter OPERATOR_KEY" 
+              value="raw-drop-operator-2026" 
+              required 
+            />
           </div>
 
-          <button type="submit" id="sub-btn" class="btn">
-            <span>Drop The Raw & Subscribe</span>
+          <!-- Non-Main Circuit Breaker Indicator -->
+          <div class="safety-banner" id="safety-banner">
+            <span style="font-size: 1.25rem;">🛡️</span>
+            <div>
+              <strong>Production Gate Active:</strong> The headless mastering agent is strictly forbidden from writing to <code>main</code>. Mastered output will be delivered via a Pull Request.
+            </div>
+          </div>
+
+          <button type="submit" id="drop-btn" class="btn-drop">
+            <span>Drop The Raw & Master</span>
             <span>→</span>
           </button>
         </form>
       </div>
 
-      <!-- Live Pipeline Console -->
+      <!-- Right: Pull Request & Telemetry Hub -->
       <div class="card">
-        <span class="card-badge">FOUNDRY STATUS</span>
-        <h2>Headless Squad Telemetry</h2>
-        <p>Active agents: Architect, Coder, Auditor, and Hacker on OpenRouter wholesale routing.</p>
-
-        <div id="status-display" style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem;">
-          Querying edge status...
+        <div class="card-header">
+          <div class="card-title">
+            <span>🔍 Owner Review & PR Station</span>
+          </div>
+          <span class="pill pill-active" id="sync-pill">Live Sync</span>
         </div>
 
-        <div class="console-box" id="console-logs">
-          [INIT] Drop The Raw initialized.<br />
-          [SQUAD] Kilo CLI & OpenCode ready.<br />
-          [EDGE] Zero-trust scraper shield active (robots.txt).<br />
+        <!-- Open Pull Requests ready for review -->
+        <div style="margin-bottom: 1.5rem;">
+          <h3 style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.75rem;">
+            Open Pull Requests (Awaiting Merge)
+          </h3>
+          <div id="pr-list">
+            <div class="empty-state">Checking for open mastered pull requests...</div>
+          </div>
+        </div>
+
+        <!-- Terminal Logs -->
+        <div>
+          <h3 style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.75rem;">
+            Foundry Activity Log
+          </h3>
+          <div class="console" id="console-logs">
+            [INIT] Drop The Raw Control Console loaded.<br />
+            [GATE] Non-Main safety enforcement initialized.<br />
+          </div>
         </div>
       </div>
     </div>
   </main>
 
-  <!-- Persistent Solo Builder Escalate Floating Button -->
-  <div class="floating-escalate">
-    <button id="escalate-btn" class="btn-escalate" title="Emergency Founder Escalation">
-      <span>🚨 Escalate to Human IT</span>
-    </button>
-  </div>
-
   <footer>
-    <p>
-      An open-source architecture by <strong>Drew Saum</strong> (@Awesaum). Built for 
-      <a href="https://company.help" style="color: #a5b4fc; text-decoration: none;" target="_blank">Artificial Unintelligence</a>.
-    </p>
+    <div>
+      Operator: <strong>Drew Saum</strong> (@Awesaum) | Flagship Foundry for 
+      <a href="https://company.help" target="_blank">Artificial Unintelligence</a>
+    </div>
+    <div>
+      <a href="https://github.com/Awesaum/drop-the-raw" target="_blank">Repository</a> · 
+      <a href="https://github.com/Awesaum/drop-the-raw/actions" target="_blank">Actions Log</a>
+    </div>
   </footer>
 
   <script>
+    const branchInput = document.getElementById('branch-input');
+    const keyInput = document.getElementById('key-input');
+    const safetyBanner = document.getElementById('safety-banner');
+    const dropBtn = document.getElementById('drop-btn');
     const consoleLogs = document.getElementById('console-logs');
-    const statusDisplay = document.getElementById('status-display');
+    const prList = document.getElementById('pr-list');
+
+    // Restore saved key
+    const savedKey = localStorage.getItem('drop_operator_key');
+    if (savedKey) keyInput.value = savedKey;
 
     function log(msg) {
       const line = `[${new Date().toLocaleTimeString()}] ${msg}<br />`;
@@ -406,72 +526,121 @@
       consoleLogs.scrollTop = consoleLogs.scrollHeight;
     }
 
-    // Fetch initial status
-    fetch('/api/status')
-      .then(res => res.json())
-      .then(data => {
-        statusDisplay.innerHTML = `<strong>Status:</strong> Ready | <strong>Squad:</strong> ${data.squad ? data.squad.join(', ') : 'Active'}`;
-        log('Live telemetry connected to /api/status');
-      })
-      .catch(() => {
-        statusDisplay.innerHTML = '<strong>Status:</strong> Local Studio Mode (Staging)';
-        log('Telemetry active in local studio mode.');
-      });
+    function setBranch(name) {
+      branchInput.value = name;
+      validateBranch();
+    }
 
-    // Handle Newsletter Lead Capture
-    document.getElementById('subscribe-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('sub-email').value;
-      const btn = document.getElementById('sub-btn');
-      btn.disabled = true;
-      btn.innerText = 'Dispatching Raw Drop...';
+    // Client-side Circuit Breaker Validation
+    function validateBranch() {
+      const val = branchInput.value.trim().toLowerCase();
+      if (val === 'main' || val === 'master' || val.endsWith('/main')) {
+        safetyBanner.className = 'safety-banner danger';
+        safetyBanner.innerHTML = `
+          <span style="font-size: 1.25rem;">🚫</span>
+          <div>
+            <strong>BLOCKED:</strong> You cannot run Drop The Raw directly on <code>main</code>. Select a staging branch to ensure clean human review.
+          </div>
+        `;
+        branchInput.classList.add('error');
+        dropBtn.disabled = true;
+      } else {
+        safetyBanner.className = 'safety-banner';
+        safetyBanner.innerHTML = `
+          <span style="font-size: 1.25rem;">🛡️</span>
+          <div>
+            <strong>Production Gate Active:</strong> Targeting staging branch <code>${val || 'branch'}</code>. Mastered output will be delivered as a Pull Request targeting <code>main</code>.
+          </div>
+        `;
+        branchInput.classList.remove('error');
+        dropBtn.disabled = false;
+      }
+    }
 
+    branchInput.addEventListener('input', validateBranch);
+
+    // Fetch Status & Open PRs
+    async function fetchStatus() {
       try {
-        const res = await fetch('/api/subscribe', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'cf-turnstile-response': 'staging-turnstile-token'
-          },
-          body: JSON.stringify({ email })
-        });
-
-        const data = await res.json();
-        if (res.ok) {
-          log(`Subscribed: ${email} -> ${data.message}`);
-          alert(data.message || 'Subscribed successfully!');
-          document.getElementById('sub-email').value = '';
+        const res = await fetch('/api/drop/status');
+        if (!res.ok) return;
+        const resJson = await res.json();
+        const response = resJson.message || resJson.response || resJson;
+        
+        // Render Open PRs
+        if (response.pullRequests && response.pullRequests.length > 0) {
+          prList.innerHTML = response.pullRequests.map(pr => `
+            <div class="pr-card">
+              <div class="pr-info">
+                <h4>#${pr.number}: ${pr.title}</h4>
+                <div class="pr-meta">Branch: ${pr.branch} | Author: ${pr.author}</div>
+              </div>
+              <a href="${pr.htmlUrl}" target="_blank" class="btn-merge">
+                <span>Review & Merge</span>
+                <span>→</span>
+              </a>
+            </div>
+          `).join('');
         } else {
-          log(`Error [${res.status}]: ${data.message || data.error}`);
-          alert(data.message || 'Subscription failed.');
+          prList.innerHTML = `<div class="empty-state">No pending pull requests. Clean staging state.</div>`;
+        }
+
+        // Render Recent Run in Log
+        if (response.runs && response.runs.length > 0) {
+          const latest = response.runs[0];
+          document.getElementById('sync-pill').innerText = `${latest.conclusion || latest.status}`;
         }
       } catch (err) {
-        log(`Network Exception: ${err.message}`);
-        alert('Could not connect to /api/subscribe.');
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = '<span>Drop The Raw & Subscribe</span> <span>→</span>';
+        console.error('Status fetch failed:', err);
       }
-    });
+    }
 
-    // Handle Emergency Escalation
-    document.getElementById('escalate-btn').addEventListener('click', async () => {
-      const reason = prompt('Please specify the issue to escalate to Drew Saum (Founder/CEO):', 'Mastering pipeline blocked');
-      if (!reason) return;
+    // Trigger Drop The Raw
+    document.getElementById('drop-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const branch = branchInput.value.trim();
+      const operatorKey = keyInput.value.trim();
+
+      if (!branch || !operatorKey) {
+        alert('Branch and Operator Passcode are required.');
+        return;
+      }
+
+      localStorage.setItem('drop_operator_key', operatorKey);
+
+      dropBtn.disabled = true;
+      dropBtn.innerHTML = `<span>Dispatching Autonomous Squad...</span>`;
+      log(`Triggering Raw Drop for branch: ${branch}`);
 
       try {
-        const res = await fetch('/api/escalate', {
+        const res = await fetch('/api/drop', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ reason })
+          body: JSON.stringify({ branch, operatorKey })
         });
+
         const data = await res.json();
-        log(`🚨 ESCALATION: ${reason} (Status: ${data.escalation ? data.escalation.status : 'DISPATCHED'})`);
-        alert('Escalation dispatched directly to Drew Saum.');
+
+        if (res.ok) {
+          log(`✔ SUCCESS: ${data.response?.message || 'Run dispatched'}`);
+          alert(`🚀 Drop The Raw Dispatched!\n\nThe headless coding squad is mastering branch "${branch}". You will be able to review the diff and merge the Pull Request.`);
+          setTimeout(fetchStatus, 3000);
+        } else {
+          log(`❌ ERROR [${res.status}]: ${data.message || data.error || 'Failed'}`);
+          alert(data.message || 'Dispatch failed.');
+        }
       } catch (err) {
-        log(`Escalation failed: ${err.message}`);
+        log(`❌ Exception: ${err.message}`);
+        alert(`Network connection failed: ${err.message}`);
+      } finally {
+        dropBtn.disabled = false;
+        dropBtn.innerHTML = `<span>Drop The Raw & Master</span> <span>→</span>`;
       }
     });
+
+    // Initial load & poll
+    fetchStatus();
+    setInterval(fetchStatus, 15000);
   </script>
 </body>
 </html>

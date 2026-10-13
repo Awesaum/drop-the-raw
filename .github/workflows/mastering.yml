@@ -3,11 +3,18 @@ name: Drop The Raw - Headless Mastering Foundry
 on:
   push:
     branches:
-      - main
+      - 'raw/**'
+      - 'staging/**'
   workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Target raw or staging branch to master (must NOT be main)'
+        required: true
+        default: 'staging'
 
 permissions:
   contents: write
+  pull-requests: write
   actions: read
   checks: write
   issues: write
@@ -29,6 +36,17 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.event.inputs.branch || github.ref_name }}
+
+      - name: Verify Non-Main Safety Gate
+        run: |
+          BRANCH_NAME="${{ github.event.inputs.branch || github.ref_name }}"
+          echo "Target Branch: $BRANCH_NAME"
+          if [ "$BRANCH_NAME" = "main" ]; then
+            echo "❌ FATAL: Cannot run Drop The Raw directly on 'main'. Raw code must be submitted via a raw/staging branch."
+            exit 1
+          fi
+          echo "✔ Safety Gate Verified: $BRANCH_NAME is an isolated non-main branch."
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -61,22 +79,42 @@ jobs:
       - name: Post-Mastering Test Verification
         run: npm test
 
-      - name: Commit Mastered Artifacts (If Modified)
+      - name: Commit Mastered Artifacts & Open Review Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          BRANCH_NAME="${{ github.event.inputs.branch || github.ref_name }}"
           if [ -n "$(git status --porcelain)" ]; then
-            echo "▶ Changes detected post-mastering. Committing to main..."
+            echo "▶ Changes detected post-mastering. Committing to $BRANCH_NAME..."
             git config --local user.name "drop-the-raw-bot"
             git config --local user.email "bot@company.help"
             git add -A
             git commit -m "chore(mastering): autonomous refactor and hardening [skip ci]"
-            git push origin main
+            git push origin "$BRANCH_NAME"
+
+            echo "▶ Opening Pull Request to main for owner review..."
+            gh pr create \
+              --title "🚀 [MASTERED] Autonomous Refactor for $BRANCH_NAME" \
+              --body "### Autonomous Headless Mastering Summary
+            - **Source Staging Branch**: \`$BRANCH_NAME\`
+            - **Target Production Branch**: \`main\`
+            - **Squad**: Kilo Code CLI & OpenCode (via Claude Sonnet 4)
+            - **Test Status**: \`npm test\` passed with 100% success
+            - **Zero-Trust Hardening**: robots.txt, Turnstile, and modular architecture applied.
+
+            *Changes are staged and ready for owner review and merge.*" \
+              --base main \
+              --head "$BRANCH_NAME" || echo "Notice: Pull Request already exists or updated."
           else
             echo "✔ Clean tree. No refactor changes required."
           fi
 
       - name: Attempt Autonomous Self-Healing on Failure
         if: failure() && env.OPENROUTER_API_KEY != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          BRANCH_NAME="${{ github.event.inputs.branch || github.ref_name }}"
           echo "⚠️ Failure detected in pipeline. Routing directly to Headless Engineering Team (Kilo + OpenCode)..."
           kilo run --auto --model "openrouter/anthropic/claude-sonnet-4" "CRITICAL: The pipeline failed during test qualification. Inspect the repository, identify the failing tests or broken syntax, refactor the code to resolve the errors, and ensure npm test passes." < /dev/null || {
             echo "⚠️ Primary self-healing failed. Engaging OpenCode autonomous repair..."
@@ -84,13 +122,14 @@ jobs:
           }
           npm test
           if [ -n "$(git status --porcelain)" ]; then
-            echo "✔ Self-healing successful. Committing autonomous repair..."
+            echo "✔ Self-healing successful. Committing autonomous repair to $BRANCH_NAME..."
             git config --local user.name "drop-the-raw-bot"
             git config --local user.email "bot@company.help"
             git add -A
             git commit -m "fix(self-healing): autonomous repair of qualification failure [skip ci]"
-            git push origin main
+            git push origin "$BRANCH_NAME"
           fi
+
 
       - name: Open Autonomous Incident Ticket on Unresolved Failure
         if: failure()

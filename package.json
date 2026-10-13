@@ -4,6 +4,7 @@
   "description": "Unfiltered vibe code in. Mastered production software out. Flagship starter kit for Artificial Unintelligence.",
   "type": "module",
   "scripts": {
+    "dev": "node scripts/dev.mjs",
     "test": "node --test test/*.test.mjs",
     "test:migrations": "node scripts/test-migrations.mjs",
     "build": "node scripts/build.mjs"
