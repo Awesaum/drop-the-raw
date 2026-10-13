@@ -39,7 +39,6 @@ export function parseRepoTarget(inputRepo, defaultOwner = 'Awesaum', defaultRepo
 export async function handleDrop(request, env = {}) {
   try {
     const body = await request.json();
-    const branch = (body.branch || '').trim();
     const providedKey = (body.operatorKey || request.headers.get('x-operator-key') || '').trim();
     const validKey = env.OPERATOR_KEY || process.env.OPERATOR_KEY || 'raw-drop-operator-2026';
 
@@ -52,14 +51,10 @@ export async function handleDrop(request, env = {}) {
       );
     }
 
-    // 2. Branch Input Validation
-    if (!branch) {
-      return createErrorResponse(
-        'Validation Error',
-        'Target staging/raw branch is required (e.g., "staging" or "raw/feature-auth").',
-        400
-      );
-    }
+    // 2. Branch Resolution (Defaults to 'raw')
+    const branch = (body.branch && typeof body.branch === 'string' && body.branch.trim()) 
+      ? body.branch.trim() 
+      : 'raw';
 
     // 3. Strict Non-Main Circuit Breaker
     if (branch === 'main' || branch === 'master' || branch.toLowerCase().endsWith('/main')) {
@@ -85,19 +80,61 @@ export async function handleDrop(request, env = {}) {
 
     // 4. Dispatch GitHub Actions Workflow
     const dispatchUrl = `https://api.github.com/repos/${owner}/${repo}/actions/workflows/mastering.yml/dispatches`;
-    const ghRes = await fetch(dispatchUrl, {
+    const dispatchHeaders = {
+      'Accept': 'application/vnd.github+json',
+      'Authorization': `Bearer ${token}`,
+      'User-Agent': 'drop-the-raw-studio/1.0',
+      'Content-Type': 'application/json'
+    };
+
+    let ghRes = await fetch(dispatchUrl, {
       method: 'POST',
-      headers: {
-        'Accept': 'application/vnd.github+json',
-        'Authorization': `Bearer ${token}`,
-        'User-Agent': 'drop-the-raw-studio/1.0',
-        'Content-Type': 'application/json'
-      },
+      headers: dispatchHeaders,
       body: JSON.stringify({
         ref: branch,
         inputs: { branch }
       })
     });
+
+    // If branch doesn't exist yet on remote, auto-create it from main and retry
+    if (!ghRes.ok && ghRes.status === 422) {
+      const errText = await ghRes.clone().text();
+      if (errText.includes('No ref found for')) {
+        const refRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/ref/heads/main`, {
+          headers: {
+            'Accept': 'application/vnd.github+json',
+            'Authorization': `Bearer ${token}`,
+            'User-Agent': 'drop-the-raw-studio/1.0'
+          }
+        });
+
+        if (refRes.ok) {
+          const refData = await refRes.json();
+          const mainSha = refData.object?.sha;
+          if (mainSha) {
+            const createRefRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/refs`, {
+              method: 'POST',
+              headers: dispatchHeaders,
+              body: JSON.stringify({
+                ref: `refs/heads/${branch}`,
+                sha: mainSha
+              })
+            });
+
+            if (createRefRes.ok) {
+              ghRes = await fetch(dispatchUrl, {
+                method: 'POST',
+                headers: dispatchHeaders,
+                body: JSON.stringify({
+                  ref: branch,
+                  inputs: { branch }
+                })
+              });
+            }
+          }
+        }
+      }
+    }
 
     if (!ghRes.ok) {
       const errText = await ghRes.text();

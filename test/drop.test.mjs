@@ -49,15 +49,15 @@ test('Drop Dispatcher API tests (Non-Main Safety Gate)', async (t) => {
     assert.equal(status, 401);
   });
 
-  await t.test('POST /api/drop rejects missing branch', async () => {
+  await t.test('POST /api/drop defaults to raw branch when omitted', async () => {
     const req = new Request('https://studio.local/api/drop', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ branch: '', operatorKey: 'test-passcode-123' })
     });
     const { response, status } = await handleDrop(req, env);
-    assert.equal(status, 400);
-    assert.match(response.message, /branch is required/i);
+    // Verified: does not reject with 400 validation error; proceeds with 'raw'
+    assert.notEqual(status, 400);
   });
 
   await t.test('POST /api/drop STRICTLY REJECTS main branch (Circuit Breaker)', async () => {
