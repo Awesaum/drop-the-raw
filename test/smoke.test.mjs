@@ -25,7 +25,7 @@ test('drop-the-raw smoke test', async (t) => {
     const opencodePath = resolve(process.cwd(), 'opencode.json');
     assert.ok(existsSync(opencodePath), 'opencode.json must exist');
     const opencodeConfig = JSON.parse(readFileSync(opencodePath, 'utf8'));
-    assert.ok(opencodeConfig.providers?.openrouter, 'opencode.json must configure openrouter provider');
+    assert.ok(opencodeConfig.provider?.openrouter || opencodeConfig.providers?.openrouter, 'opencode.json must configure openrouter provider');
 
     const agentsPath = resolve(process.cwd(), 'AGENTS.md');
     assert.ok(existsSync(agentsPath), 'AGENTS.md must exist');
@@ -61,5 +61,12 @@ test('drop-the-raw smoke test', async (t) => {
     const conceptPath = resolve(process.cwd(), 'specs/CONCEPT.md');
     const content = readFileSync(conceptPath, 'utf8');
     assert.match(content, /drop_the_raw_ready:\s*true/);
+  });
+
+  await t.test('src/index.js and public/index.html drop-the-raw app files exist', () => {
+    const appPath = resolve(process.cwd(), 'src/index.js');
+    assert.ok(existsSync(appPath), 'src/index.js must exist');
+    const htmlPath = resolve(process.cwd(), 'public/index.html');
+    assert.ok(existsSync(htmlPath), 'public/index.html must exist');
   });
 });

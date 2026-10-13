@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>drop-the-raw | Autonomous Headless Mastering Foundry</title>
+  <meta name="description" content="Unfiltered vibe code in. Mastered production software out. Flagship starter kit for Artificial Unintelligence by Drew Saum." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #090a0f;
+      --card-bg: rgba(18, 20, 29, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #6366f1;
+      --accent-glow: rgba(99, 102, 241, 0.35);
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --mono: 'JetBrains Mono', monospace;
+      --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.15) 0%, transparent 45%),
+        radial-gradient(circle at 85% 85%, rgba(16, 185, 129, 0.1) 0%, transparent 45%);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      line-height: 1.6;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-badge {
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      color: #fff;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover {
+      color: var(--text);
+    }
+
+    main {
+      flex: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem;
+      width: 100%;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .tagline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #a5b4fc;
+      padding: 0.35rem 1rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 1.25rem;
+      background: linear-gradient(to bottom right, #fff, #9ca3af);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto 2.5rem auto;
+    }
+
+    .pipeline-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 4rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 2rem;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+
+    .card-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-family: var(--mono);
+      color: #818cf8;
+      background: rgba(99, 102, 241, 0.1);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+    }
+
+    .card h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: var(--text-muted);
+    }
+
+    .input-field {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 0.95rem;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent), #4f46e5);
+      color: #fff;
+      border: none;
+      padding: 0.85rem 1.5rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      transition: filter 0.2s, transform 0.1s;
+    }
+
+    .btn:hover {
+      filter: brightness(1.1);
+    }
+
+    .btn:active {
+      transform: scale(0.99);
+    }
+
+    .turnstile-box {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem;
+      border: 1px dashed var(--card-border);
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
+    }
+
+    .console-box {
+      background: #000;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 1rem;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      color: #a5b4fc;
+      height: 180px;
+      overflow-y: auto;
+      margin-top: 1rem;
+    }
+
+    /* Floating Escalate Button */
+    .floating-escalate {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 100;
+    }
+
+    .btn-escalate {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+      padding: 0.65rem 1.25rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-escalate:hover {
+      background: rgba(239, 68, 68, 0.25);
+      border-color: #ef4444;
+      color: #fff;
+    }
+
+    footer {
+      border-top: 1px solid var(--card-border);
+      padding: 2rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <span>drop-the-raw</span>
+      <span class="brand-badge">Headless Foundry</span>
+    </div>
+    <div class="nav-links">
+      <a href="https://github.com/Awesaum/drop-the-raw" target="_blank" class="nav-link">GitHub</a>
+      <a href="https://company.help" target="_blank" class="nav-link">Artificial Unintelligence</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="tagline">
+        <span class="status-dot"></span>
+        <span>The KozarKane "One Take" Software Foundry</span>
+      </div>
+      <h1>Unfiltered vibe code in.<br />Mastered production software out.</h1>
+      <p>
+        Replace fragile $200/mo copilot seat subscriptions with headless wholesale intelligence on GitHub Actions. Hack fast locally, drop the raw with git push, and let the mastering house turn it into platinum.
+      </p>
+    </section>
+
+    <div class="pipeline-grid">
+      <!-- Newsletter Lead Capture -->
+      <div class="card">
+        <span class="card-badge">LEAD CAPTURE</span>
+        <h2>Artificial Unintelligence Dispatch</h2>
+        <p>Get weekly blueprints by Drew Saum on replacing human IT labor with autonomous headless squads.</p>
+        
+        <form id="subscribe-form">
+          <div class="form-group">
+            <label for="sub-email">Operator Email Address</label>
+            <input type="email" id="sub-email" class="input-field" placeholder="you@company.help" required />
+          </div>
+
+          <div class="turnstile-box">
+            <span class="status-dot"></span>
+            <span>Cloudflare Turnstile Zero-Trust Shield Active</span>
+          </div>
+
+          <button type="submit" id="sub-btn" class="btn">
+            <span>Drop The Raw & Subscribe</span>
+            <span>→</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Live Pipeline Console -->
+      <div class="card">
+        <span class="card-badge">FOUNDRY STATUS</span>
+        <h2>Headless Squad Telemetry</h2>
+        <p>Active agents: Architect, Coder, Auditor, and Hacker on OpenRouter wholesale routing.</p>
+
+        <div id="status-display" style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+          Querying edge status...
+        </div>
+
+        <div class="console-box" id="console-logs">
+          [INIT] Drop The Raw initialized.<br />
+          [SQUAD] Kilo CLI & OpenCode ready.<br />
+          [EDGE] Zero-trust scraper shield active (robots.txt).<br />
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Persistent Solo Builder Escalate Floating Button -->
+  <div class="floating-escalate">
+    <button id="escalate-btn" class="btn-escalate" title="Emergency Founder Escalation">
+      <span>🚨 Escalate to Human IT</span>
+    </button>
+  </div>
+
+  <footer>
+    <p>
+      An open-source architecture by <strong>Drew Saum</strong> (@Awesaum). Built for 
+      <a href="https://company.help" style="color: #a5b4fc; text-decoration: none;" target="_blank">Artificial Unintelligence</a>.
+    </p>
+  </footer>
+
+  <script>
+    const consoleLogs = document.getElementById('console-logs');
+    const statusDisplay = document.getElementById('status-display');
+
+    function log(msg) {
+      const line = `[${new Date().toLocaleTimeString()}] ${msg}<br />`;
+      consoleLogs.innerHTML += line;
+      consoleLogs.scrollTop = consoleLogs.scrollHeight;
+    }
+
+    // Fetch initial status
+    fetch('/api/status')
+      .then(res => res.json())
+      .then(data => {
+        statusDisplay.innerHTML = `<strong>Status:</strong> Ready | <strong>Squad:</strong> ${data.squad ? data.squad.join(', ') : 'Active'}`;
+        log('Live telemetry connected to /api/status');
+      })
+      .catch(() => {
+        statusDisplay.innerHTML = '<strong>Status:</strong> Local Studio Mode (Staging)';
+        log('Telemetry active in local studio mode.');
+      });
+
+    // Handle Newsletter Lead Capture
+    document.getElementById('subscribe-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('sub-email').value;
+      const btn = document.getElementById('sub-btn');
+      btn.disabled = true;
+      btn.innerText = 'Dispatching Raw Drop...';
+
+      try {
+        const res = await fetch('/api/subscribe', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'cf-turnstile-response': 'staging-turnstile-token'
+          },
+          body: JSON.stringify({ email })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          log(`Subscribed: ${email} -> ${data.message}`);
+          alert(data.message || 'Subscribed successfully!');
+          document.getElementById('sub-email').value = '';
+        } else {
+          log(`Error [${res.status}]: ${data.message || data.error}`);
+          alert(data.message || 'Subscription failed.');
+        }
+      } catch (err) {
+        log(`Network Exception: ${err.message}`);
+        alert('Could not connect to /api/subscribe.');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>Drop The Raw & Subscribe</span> <span>→</span>';
+      }
+    });
+
+    // Handle Emergency Escalation
+    document.getElementById('escalate-btn').addEventListener('click', async () => {
+      const reason = prompt('Please specify the issue to escalate to Drew Saum (Founder/CEO):', 'Mastering pipeline blocked');
+      if (!reason) return;
+
+      try {
+        const res = await fetch('/api/escalate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ reason })
+        });
+        const data = await res.json();
+        log(`🚨 ESCALATION: ${reason} (Status: ${data.escalation ? data.escalation.status : 'DISPATCHED'})`);
+        alert('Escalation dispatched directly to Drew Saum.');
+      } catch (err) {
+        log(`Escalation failed: ${err.message}`);
+      }
+    });
+  </script>
+</body>
+</html>

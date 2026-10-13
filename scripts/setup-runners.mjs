@@ -12,36 +12,59 @@ if (!apiKey) {
 }
 
 const home = homedir();
-const kiloConfigDir = resolve(home, '.config', 'kilo');
+
+// Auth directories where Kilo and OpenCode read provider credentials
+const opencodeDataDir = resolve(home, '.local', 'share', 'opencode');
+const kiloDataDir = resolve(home, '.local', 'share', 'kilo');
 const opencodeConfigDir = resolve(home, '.config', 'opencode');
+const kiloConfigDir = resolve(home, '.config', 'kilo');
 
-mkdirSync(kiloConfigDir, { recursive: true });
+mkdirSync(opencodeDataDir, { recursive: true });
+mkdirSync(kiloDataDir, { recursive: true });
 mkdirSync(opencodeConfigDir, { recursive: true });
+mkdirSync(kiloConfigDir, { recursive: true });
 
-const kiloConfig = {
+// Standard OpenRouter authentication payload for OpenCode and Kilo CLI
+const authConfig = {
+  openrouter: {
+    type: 'api',
+    key: apiKey
+  }
+};
+
+// OpenCode runtime configuration adhering strictly to V1 schema
+const opencodeConfig = {
+  $schema: 'https://opencode.ai/config.json',
+  model: 'openrouter/anthropic/claude-3.7-sonnet',
   provider: {
     openrouter: {
       options: {
-        apiKey: apiKey
+        baseURL: 'https://openrouter.ai/api/v1'
       }
     }
   }
 };
 
-const opencodeConfig = {
-  $schema: 'https://opencode.ai/config.json',
-  model: 'openrouter/anthropic/claude-3.5-sonnet',
-  providers: {
+// Kilo runtime configuration adhering strictly to Kilo CLI schema
+const kiloConfig = {
+  $schema: 'https://kilocode.ai/config.json',
+  model: 'openrouter/anthropic/claude-3.7-sonnet',
+  provider: {
     openrouter: {
-      settings: {
-        baseURL: 'https://openrouter.ai/api/v1',
-        apiKey: apiKey
+      options: {
+        baseURL: 'https://openrouter.ai/api/v1'
       }
     }
   }
 };
 
-writeFileSync(resolve(kiloConfigDir, 'kilo.json'), JSON.stringify(kiloConfig, null, 2));
-writeFileSync(resolve(opencodeConfigDir, 'opencode.json'), JSON.stringify(opencodeConfig, null, 2));
+// Write auth credentials
+writeFileSync(resolve(opencodeDataDir, 'auth.json'), JSON.stringify(authConfig, null, 2));
+writeFileSync(resolve(kiloDataDir, 'auth.json'), JSON.stringify(authConfig, null, 2));
 
-console.log('✔ Kilo & OpenCode runtime configs written successfully to user home directory.');
+// Write global runner configs
+writeFileSync(resolve(opencodeConfigDir, 'opencode.json'), JSON.stringify(opencodeConfig, null, 2));
+writeFileSync(resolve(kiloConfigDir, 'kilo.json'), JSON.stringify(kiloConfig, null, 2));
+
+console.log('✔ Kilo & OpenCode auth.json and runtime configs written successfully to runner environment.');
+
