@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { handleDrop, parseRepoTarget, handleBranchCheck, handleCreateBranch } from '../src/api/drop.js';
+import { handleDrop } from '../src/api/drop.js';
+import { handleBranchCheck } from '../src/api/branch-check.js';
+import { handleCreateBranch } from '../src/api/create-branch.js';
+import { parseRepoTarget } from '../src/services/repository.js';
 
 test('Drop Dispatcher API tests (Non-Main Safety Gate)', async (t) => {
   const env = {

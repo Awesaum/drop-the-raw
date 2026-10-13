@@ -21,7 +21,7 @@ export async function handleHealth(request, env = {}) {
     mode: 'edge'
   };
 
-  return createSuccessResponse('Service is healthy', healthData, 200);
+  return createSuccessResponse(healthData, 200);
 }
 
 /**

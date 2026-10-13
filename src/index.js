@@ -9,7 +9,10 @@ import { handleHealth, handleRobots, handle404 } from './core/index.js';
 import { handleSubscribe } from './api/subscribe.js';
 import { handleEscalate } from './api/escalate.js';
 import { handleStatus } from './api/status.js';
-import { handleDrop, handleDropStatus, handleBranchCheck, handleCreateBranch } from './api/drop.js';
+import { handleDrop } from './api/drop.js';
+import { handleDropStatus } from './api/status.js';
+import { handleBranchCheck } from './api/branch-check.js';
+import { handleCreateBranch } from './api/create-branch.js';
 
 /**
  * Primary edge fetch handler for Cloudflare Workers / Node runtime
