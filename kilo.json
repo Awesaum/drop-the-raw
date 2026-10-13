@@ -1,6 +1,6 @@
 {
   "$schema": "https://kilocode.ai/config.json",
-  "model": "openrouter/anthropic/claude-sonnet-4",
+  "model": "openrouter/deepseek/deepseek-chat",
   "provider": {
     "openrouter": {
       "options": {
@@ -9,4 +9,3 @@
     }
   }
 }
-

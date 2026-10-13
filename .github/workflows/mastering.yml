@@ -1,11 +1,6 @@
 name: Drop The Raw - Headless Mastering Foundry
 
 on:
-  push:
-    branches:
-      - 'raw'
-      - 'raw/**'
-      - 'staging/**'
   workflow_dispatch:
     inputs:
       branch:
@@ -71,10 +66,10 @@ jobs:
       - name: Execute Headless Autonomous Mastering (Kilo & OpenCode)
         if: env.OPENROUTER_API_KEY != ''
         run: |
-          echo "▶ Triggering autonomous non-interactive mastering run..."
-          kilo run --auto --model "openrouter/anthropic/claude-sonnet-4" "You are the Headless Autonomous Engineer for drop-the-raw. Inspect raw prototype code in src/. Refactor it into clean modular architecture (<50 lines per module), enforce Zero Trust controls (robots.txt, Turnstile, WAF), and write comprehensive unit tests in test/. Ensure npm test passes with zero failures." < /dev/null || {
+          echo "▶ Triggering autonomous non-interactive mastering run via DeepSeek V3..."
+          kilo run --auto --model "openrouter/deepseek/deepseek-chat" "You are the Headless Autonomous Engineer for drop-the-raw. Inspect raw prototype code in src/. Refactor it into clean modular architecture (<50 lines per module), enforce Zero Trust controls (robots.txt, Turnstile, WAF), and write comprehensive unit tests in test/. Ensure npm test passes with zero failures." < /dev/null || {
             echo "⚠️ Primary mastering pass signaled fallback. Invoking OpenCode runtime..."
-            opencode run --auto --model "openrouter/anthropic/claude-sonnet-4" "You are the Headless Autonomous Engineer for drop-the-raw. Inspect raw prototype code in src/. Refactor it into clean modular architecture, enforce Zero Trust controls, and ensure npm test passes." < /dev/null
+            opencode run --auto --model "openrouter/anthropic/claude-3.5-haiku" "You are the Headless Autonomous Engineer for drop-the-raw. Inspect raw prototype code in src/. Refactor it into clean modular architecture, enforce Zero Trust controls, and ensure npm test passes." < /dev/null
           }
 
       - name: Post-Mastering Test Verification
@@ -99,7 +94,7 @@ jobs:
               --body "### Autonomous Headless Mastering Summary
             - **Source Staging Branch**: \`$BRANCH_NAME\`
             - **Target Production Branch**: \`main\`
-            - **Squad**: Kilo Code CLI & OpenCode (via Claude Sonnet 4)
+            - **Squad**: Kilo Code CLI & OpenCode (via DeepSeek V3 / Wholesale Routing)
             - **Test Status**: \`npm test\` passed with 100% success
             - **Zero-Trust Hardening**: robots.txt, Turnstile, and modular architecture applied.
 
@@ -108,27 +103,6 @@ jobs:
               --head "$BRANCH_NAME" || echo "Notice: Pull Request already exists or updated."
           else
             echo "✔ Clean tree. No refactor changes required."
-          fi
-
-      - name: Attempt Autonomous Self-Healing on Failure
-        if: failure() && env.OPENROUTER_API_KEY != ''
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          BRANCH_NAME="${{ github.event.inputs.branch || github.ref_name }}"
-          echo "⚠️ Failure detected in pipeline. Routing directly to Headless Engineering Team (Kilo + OpenCode)..."
-          kilo run --auto --model "openrouter/anthropic/claude-sonnet-4" "CRITICAL: The pipeline failed during test qualification. Inspect the repository, identify the failing tests or broken syntax, refactor the code to resolve the errors, and ensure npm test passes." < /dev/null || {
-            echo "⚠️ Primary self-healing failed. Engaging OpenCode autonomous repair..."
-            opencode run --auto --model "openrouter/anthropic/claude-sonnet-4" "CRITICAL: The pipeline failed during test qualification. Inspect failing tests, fix the broken syntax or tests, and ensure npm test passes." < /dev/null
-          }
-          npm test
-          if [ -n "$(git status --porcelain)" ]; then
-            echo "✔ Self-healing successful. Committing autonomous repair to $BRANCH_NAME..."
-            git config --local user.name "drop-the-raw-bot"
-            git config --local user.email "bot@company.help"
-            git add -A
-            git commit -m "fix(self-healing): autonomous repair of qualification failure [skip ci]"
-            git push origin "$BRANCH_NAME"
           fi
 
 
