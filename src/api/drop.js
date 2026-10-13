@@ -6,6 +6,31 @@
 import { createErrorResponse, createSuccessResponse } from '../utils/index.js';
 
 /**
+ * Parses GitHub repository URL or owner/repo string into clean owner and repo components
+ * @param {string} inputRepo - e.g. "https://github.com/Awesaum/drop-the-raw" or "Awesaum/drop-the-raw"
+ * @param {string} defaultOwner
+ * @param {string} defaultRepo
+ */
+export function parseRepoTarget(inputRepo, defaultOwner = 'Awesaum', defaultRepo = 'drop-the-raw') {
+  if (!inputRepo || typeof inputRepo !== 'string') {
+    return { owner: defaultOwner, repo: defaultRepo, fullUrl: `https://github.com/${defaultOwner}/${defaultRepo}` };
+  }
+  const clean = inputRepo.trim()
+    .replace(/^https?:\/\/github\.com\//i, '')
+    .replace(/\.git$/i, '')
+    .replace(/^\/+|\/+$/g, '');
+  const parts = clean.split('/');
+  if (parts.length >= 2 && parts[0] && parts[1]) {
+    return { 
+      owner: parts[0], 
+      repo: parts[1], 
+      fullUrl: `https://github.com/${parts[0]}/${parts[1]}` 
+    };
+  }
+  return { owner: defaultOwner, repo: defaultRepo, fullUrl: `https://github.com/${defaultOwner}/${defaultRepo}` };
+}
+
+/**
  * Dispatches a headless mastering run on a non-main staging/raw branch
  * @param {Request} request
  * @param {Object} env
@@ -46,8 +71,9 @@ export async function handleDrop(request, env = {}) {
     }
 
     const token = env.GITHUB_TOKEN || process.env.GITHUB_TOKEN;
-    const owner = env.GITHUB_OWNER || process.env.GITHUB_OWNER || 'Awesaum';
-    const repo = env.GITHUB_REPO || process.env.GITHUB_REPO || 'drop-the-raw';
+    const defaultOwner = env.GITHUB_OWNER || process.env.GITHUB_OWNER || 'Awesaum';
+    const defaultRepo = env.GITHUB_REPO || process.env.GITHUB_REPO || 'drop-the-raw';
+    const { owner, repo, fullUrl } = parseRepoTarget(body.repoUrl, defaultOwner, defaultRepo);
 
     if (!token) {
       return createErrorResponse(
@@ -108,9 +134,13 @@ export async function handleDrop(request, env = {}) {
  */
 export async function handleDropStatus(request, env = {}) {
   try {
+    const url = new URL(request.url);
+    const paramRepo = url.searchParams.get('repoUrl') || '';
+    const defaultOwner = env.GITHUB_OWNER || process.env.GITHUB_OWNER || 'Awesaum';
+    const defaultRepo = env.GITHUB_REPO || process.env.GITHUB_REPO || 'drop-the-raw';
+    const { owner, repo, fullUrl } = parseRepoTarget(paramRepo, defaultOwner, defaultRepo);
+
     const token = env.GITHUB_TOKEN || process.env.GITHUB_TOKEN;
-    const owner = env.GITHUB_OWNER || process.env.GITHUB_OWNER || 'Awesaum';
-    const repo = env.GITHUB_REPO || process.env.GITHUB_REPO || 'drop-the-raw';
 
     const headers = {
       'Accept': 'application/vnd.github+json',

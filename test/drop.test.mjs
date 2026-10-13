@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { handleDrop } from '../src/api/drop.js';
+import { handleDrop, parseRepoTarget } from '../src/api/drop.js';
 
 test('Drop Dispatcher API tests (Non-Main Safety Gate)', async (t) => {
   const env = {
@@ -9,6 +9,24 @@ test('Drop Dispatcher API tests (Non-Main Safety Gate)', async (t) => {
     GITHUB_OWNER: 'Awesaum',
     GITHUB_REPO: 'drop-the-raw'
   };
+
+  await t.test('parseRepoTarget parses various GitHub repo formats', () => {
+    assert.deepEqual(parseRepoTarget('https://github.com/my-org/my-vibe-app'), {
+      owner: 'my-org',
+      repo: 'my-vibe-app',
+      fullUrl: 'https://github.com/my-org/my-vibe-app'
+    });
+    assert.deepEqual(parseRepoTarget('my-org/my-vibe-app.git'), {
+      owner: 'my-org',
+      repo: 'my-vibe-app',
+      fullUrl: 'https://github.com/my-org/my-vibe-app'
+    });
+    assert.deepEqual(parseRepoTarget(''), {
+      owner: 'Awesaum',
+      repo: 'drop-the-raw',
+      fullUrl: 'https://github.com/Awesaum/drop-the-raw'
+    });
+  });
 
   await t.test('POST /api/drop rejects missing passcode', async () => {
     const req = new Request('https://studio.local/api/drop', {

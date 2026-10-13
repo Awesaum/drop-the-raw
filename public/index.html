@@ -421,6 +421,21 @@
 
         <form id="drop-form">
           <div class="form-group">
+            <label for="repo-input">Staging GitHub Repository URL</label>
+            <input 
+              type="text" 
+              id="repo-input" 
+              class="input-field" 
+              placeholder="https://github.com/Awesaum/drop-the-raw" 
+              value="https://github.com/Awesaum/drop-the-raw" 
+              required 
+            />
+            <div class="presets">
+              <span class="preset-btn" onclick="setRepo('https://github.com/Awesaum/drop-the-raw')">Awesaum/drop-the-raw</span>
+            </div>
+          </div>
+
+          <div class="form-group">
             <label for="branch-input">Target Staging / Raw Branch</label>
             <input 
               type="text" 
@@ -509,6 +524,7 @@
   </footer>
 
   <script>
+    const repoInput = document.getElementById('repo-input');
     const branchInput = document.getElementById('branch-input');
     const keyInput = document.getElementById('key-input');
     const safetyBanner = document.getElementById('safety-banner');
@@ -516,14 +532,24 @@
     const consoleLogs = document.getElementById('console-logs');
     const prList = document.getElementById('pr-list');
 
-    // Restore saved key
+    // Restore saved settings
     const savedKey = localStorage.getItem('drop_operator_key');
     if (savedKey) keyInput.value = savedKey;
+
+    const savedRepo = localStorage.getItem('drop_repo_url');
+    if (savedRepo && repoInput) repoInput.value = savedRepo;
 
     function log(msg) {
       const line = `[${new Date().toLocaleTimeString()}] ${msg}<br />`;
       consoleLogs.innerHTML += line;
       consoleLogs.scrollTop = consoleLogs.scrollHeight;
+    }
+
+    function setRepo(url) {
+      if (repoInput) {
+        repoInput.value = url;
+        fetchStatus();
+      }
     }
 
     function setBranch(name) {
@@ -558,11 +584,13 @@
     }
 
     branchInput.addEventListener('input', validateBranch);
+    if (repoInput) repoInput.addEventListener('change', fetchStatus);
 
     // Fetch Status & Open PRs
     async function fetchStatus() {
       try {
-        const res = await fetch('/api/drop/status');
+        const repoUrl = repoInput ? repoInput.value.trim() : '';
+        const res = await fetch(`/api/drop/status?repoUrl=${encodeURIComponent(repoUrl)}`);
         if (!res.ok) return;
         const resJson = await res.json();
         const response = resJson.message || resJson.response || resJson;
@@ -582,7 +610,7 @@
             </div>
           `).join('');
         } else {
-          prList.innerHTML = `<div class="empty-state">No pending pull requests. Clean staging state.</div>`;
+          prList.innerHTML = `<div class="empty-state">No pending pull requests for ${response.repository || 'target repository'}. Clean staging state.</div>`;
         }
 
         // Render Recent Run in Log
@@ -598,6 +626,7 @@
     // Trigger Drop The Raw
     document.getElementById('drop-form').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const repoUrl = repoInput ? repoInput.value.trim() : '';
       const branch = branchInput.value.trim();
       const operatorKey = keyInput.value.trim();
 
@@ -607,23 +636,24 @@
       }
 
       localStorage.setItem('drop_operator_key', operatorKey);
+      if (repoUrl) localStorage.setItem('drop_repo_url', repoUrl);
 
       dropBtn.disabled = true;
       dropBtn.innerHTML = `<span>Dispatching Autonomous Squad...</span>`;
-      log(`Triggering Raw Drop for branch: ${branch}`);
+      log(`Triggering Raw Drop for ${repoUrl} [${branch}]`);
 
       try {
         const res = await fetch('/api/drop', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ branch, operatorKey })
+          body: JSON.stringify({ repoUrl, branch, operatorKey })
         });
 
         const data = await res.json();
 
         if (res.ok) {
-          log(`✔ SUCCESS: ${data.response?.message || 'Run dispatched'}`);
-          alert(`🚀 Drop The Raw Dispatched!\n\nThe headless coding squad is mastering branch "${branch}". You will be able to review the diff and merge the Pull Request.`);
+          log(`✔ SUCCESS: ${data.response?.message || data.message || 'Run dispatched'}`);
+          alert(`🚀 Drop The Raw Dispatched!\n\nThe headless coding squad is mastering branch "${branch}" on ${repoUrl || 'repository'}.\n\nYou will be able to review the diff and merge the Pull Request.`);
           setTimeout(fetchStatus, 3000);
         } else {
           log(`❌ ERROR [${res.status}]: ${data.message || data.error || 'Failed'}`);
@@ -644,3 +674,4 @@
   </script>
 </body>
 </html>
+
