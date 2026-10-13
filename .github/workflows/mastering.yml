@@ -66,10 +66,10 @@ jobs:
       - name: Execute Headless Autonomous Mastering (Kilo & OpenCode)
         if: env.OPENROUTER_API_KEY != ''
         run: |
-          echo "▶ Triggering autonomous non-interactive mastering run via DeepSeek V3..."
-          kilo run --auto --model "openrouter/deepseek/deepseek-chat" "You are the Headless Autonomous Engineer for drop-the-raw. Inspect raw prototype code in src/. Refactor it into clean modular architecture (<50 lines per module), enforce Zero Trust controls (robots.txt, Turnstile, WAF), and write comprehensive unit tests in test/. Ensure npm test passes with zero failures." < /dev/null || {
+          echo "▶ Triggering autonomous non-interactive mastering run via Claude Sonnet 4..."
+          kilo run --auto --model "openrouter/anthropic/claude-sonnet-4" "You are the Headless Autonomous Engineer for drop-the-raw. Inspect raw prototype code in src/. Refactor it into clean modular architecture (<50 lines per module), enforce Zero Trust controls (robots.txt, Turnstile, WAF), and write comprehensive unit tests in test/. Ensure npm test passes with zero failures." < /dev/null || {
             echo "⚠️ Primary mastering pass signaled fallback. Invoking OpenCode runtime..."
-            opencode run --auto --model "openrouter/anthropic/claude-3.5-haiku" "You are the Headless Autonomous Engineer for drop-the-raw. Inspect raw prototype code in src/. Refactor it into clean modular architecture, enforce Zero Trust controls, and ensure npm test passes." < /dev/null
+            opencode run --auto --model "openrouter/anthropic/claude-sonnet-4" "You are the Headless Autonomous Engineer for drop-the-raw. Inspect raw prototype code in src/. Refactor it into clean modular architecture, enforce Zero Trust controls, and ensure npm test passes." < /dev/null
           }
 
       - name: Post-Mastering Test Verification
@@ -94,7 +94,7 @@ jobs:
               --body "### Autonomous Headless Mastering Summary
             - **Source Staging Branch**: \`$BRANCH_NAME\`
             - **Target Production Branch**: \`main\`
-            - **Squad**: Kilo Code CLI & OpenCode (via DeepSeek V3 / Wholesale Routing)
+            - **Squad**: Kilo Code CLI & OpenCode (via Claude Sonnet 4 Flagship Mastering)
             - **Test Status**: \`npm test\` passed with 100% success
             - **Zero-Trust Hardening**: robots.txt, Turnstile, and modular architecture applied.
 
