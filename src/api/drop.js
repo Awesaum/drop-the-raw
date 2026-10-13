@@ -226,3 +226,146 @@ export async function handleDropStatus(request, env = {}) {
     return createErrorResponse('Status Query Failed', err.message, 500);
   }
 }
+
+/**
+ * Checks whether the target repository and 'raw' branch exist
+ * @param {Request} request
+ * @param {Object} env
+ * @returns {Promise<{response: Object, status: number}>}
+ */
+export async function handleBranchCheck(request, env = {}) {
+  try {
+    const url = new URL(request.url);
+    const paramRepo = url.searchParams.get('repoUrl') || '';
+    const branch = url.searchParams.get('branch') || 'raw';
+    const defaultOwner = env.GITHUB_OWNER || process.env.GITHUB_OWNER || 'Awesaum';
+    const defaultRepo = env.GITHUB_REPO || process.env.GITHUB_REPO || 'drop-the-raw';
+    const { owner, repo, fullUrl } = parseRepoTarget(paramRepo, defaultOwner, defaultRepo);
+
+    const token = env.GITHUB_TOKEN || process.env.GITHUB_TOKEN;
+    const headers = {
+      'Accept': 'application/vnd.github+json',
+      'User-Agent': 'drop-the-raw-studio/1.0'
+    };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    // Check repository access
+    const repoRes = await fetch(`https://api.github.com/repos/${owner}/${repo}`, { headers });
+    if (!repoRes.ok) {
+      return createSuccessResponse({
+        repoExists: false,
+        rawExists: false,
+        repository: `${owner}/${repo}`,
+        defaultBranch: 'unknown',
+        message: `Repository ${owner}/${repo} not found or not accessible.`
+      }, 200);
+    }
+    const repoData = await repoRes.json();
+    const defaultBranch = repoData.default_branch || 'main';
+
+    // Check branch existence
+    const branchRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/branches/${branch}`, { headers });
+    const rawExists = branchRes.ok;
+
+    return createSuccessResponse({
+      repoExists: true,
+      rawExists,
+      branch,
+      repository: `${owner}/${repo}`,
+      defaultBranch,
+      isDefaultBranch: branch === defaultBranch,
+      message: rawExists 
+        ? `Branch '${branch}' exists and is ready for raw drops.` 
+        : `Branch '${branch}' does not exist on ${owner}/${repo}.`
+    }, 200);
+  } catch (err) {
+    return createErrorResponse('Branch Check Failed', err.message, 500);
+  }
+}
+
+/**
+ * Creates the 'raw' branch from the default branch (main)
+ * @param {Request} request
+ * @param {Object} env
+ * @returns {Promise<{response: Object, status: number}>}
+ */
+export async function handleCreateBranch(request, env = {}) {
+  try {
+    const body = await request.json();
+    const branch = (body.branch || 'raw').trim();
+    const providedKey = (body.operatorKey || request.headers.get('x-operator-key') || '').trim();
+    const validKey = env.OPERATOR_KEY || process.env.OPERATOR_KEY || 'raw-drop-operator-2026';
+
+    if (!providedKey || providedKey !== validKey) {
+      return createErrorResponse('Authentication Failure', 'Invalid or missing operator passcode.', 401);
+    }
+
+    if (branch === 'main' || branch === 'master' || branch.toLowerCase().endsWith('/main')) {
+      return createErrorResponse('Safety Gate Violation', 'Cannot create or target main branch as a raw sandbox.', 400);
+    }
+
+    const token = env.GITHUB_TOKEN || process.env.GITHUB_TOKEN;
+    const defaultOwner = env.GITHUB_OWNER || process.env.GITHUB_OWNER || 'Awesaum';
+    const defaultRepo = env.GITHUB_REPO || process.env.GITHUB_REPO || 'drop-the-raw';
+    const { owner, repo } = parseRepoTarget(body.repoUrl, defaultOwner, defaultRepo);
+
+    if (!token) {
+      return createErrorResponse('Configuration Error', 'GITHUB_TOKEN not configured.', 500);
+    }
+
+    const headers = {
+      'Accept': 'application/vnd.github+json',
+      'Authorization': `Bearer ${token}`,
+      'User-Agent': 'drop-the-raw-studio/1.0',
+      'Content-Type': 'application/json'
+    };
+
+    // 1. Get default branch SHA (main)
+    const refRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/ref/heads/main`, { headers });
+    if (!refRes.ok) {
+      const errText = await refRes.text();
+      return createErrorResponse('Main Branch Not Found', `Failed to fetch main ref: ${errText}`, refRes.status);
+    }
+    const refData = await refRes.json();
+    const mainSha = refData.object?.sha;
+
+    if (!mainSha) {
+      return createErrorResponse('Reference Error', 'Could not determine commit SHA for main branch.', 500);
+    }
+
+    // 2. Create branch ref
+    const createRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/refs`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        ref: `refs/heads/${branch}`,
+        sha: mainSha
+      })
+    });
+
+    if (!createRes.ok) {
+      const errText = await createRes.text();
+      if (createRes.status === 422 && errText.includes('Reference already exists')) {
+        return createSuccessResponse({
+          created: false,
+          alreadyExists: true,
+          branch,
+          repository: `${owner}/${repo}`,
+          message: `Branch '${branch}' already exists.`
+        }, 200);
+      }
+      return createErrorResponse('Branch Creation Failed', errText, createRes.status);
+    }
+
+    return createSuccessResponse({
+      created: true,
+      branch,
+      repository: `${owner}/${repo}`,
+      message: `Branch '${branch}' created successfully from main. Ready for raw drops.`
+    }, 201);
+  } catch (err) {
+    return createErrorResponse('Malformed Request', err.message, 400);
+  }
+}

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Drop The Raw | Operator Control Console</title>
-  <meta name="description" content="Protected Headless Mastering Foundry Console. Master unvetted raw/staging code and open reviewable pull requests." />
+  <meta name="description" content="Master coding is as easy as 1-2-3. Autonomous Headless Mastering Foundry for vibe coders." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -14,10 +14,11 @@
       --card-bg: rgba(15, 18, 28, 0.85);
       --card-border: rgba(255, 255, 255, 0.08);
       --accent: #6366f1;
-      --accent-glow: rgba(99, 102, 241, 0.4);
+      --accent-glow: rgba(99, 102, 241, 0.45);
       --success: #10b981;
-      --success-glow: rgba(16, 185, 129, 0.35);
+      --success-glow: rgba(16, 185, 129, 0.4);
       --warning: #f59e0b;
+      --warning-glow: rgba(245, 158, 11, 0.35);
       --danger: #ef4444;
       --danger-glow: rgba(239, 68, 68, 0.35);
       --text: #f3f4f6;
@@ -35,9 +36,9 @@
     body {
       background-color: var(--bg);
       background-image: 
-        radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.18) 0%, transparent 40%),
-        radial-gradient(circle at 90% 90%, rgba(16, 185, 129, 0.12) 0%, transparent 40%),
-        radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+        radial-gradient(circle at 15% 10%, rgba(99, 102, 241, 0.18) 0%, transparent 45%),
+        radial-gradient(circle at 85% 90%, rgba(16, 185, 129, 0.12) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.85) 0%, transparent 100%);
       color: var(--text);
       font-family: var(--sans);
       min-height: 100vh;
@@ -46,6 +47,7 @@
       line-height: 1.5;
     }
 
+    /* Top Navigation Header */
     header {
       padding: 1.25rem 2rem;
       display: flex;
@@ -63,7 +65,7 @@
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 1.15rem;
       letter-spacing: -0.02em;
     }
@@ -74,7 +76,7 @@
       padding: 0.2rem 0.6rem;
       border-radius: 6px;
       font-size: 0.7rem;
-      font-weight: 600;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
@@ -99,61 +101,163 @@
       box-shadow: 0 0 8px var(--success);
     }
 
-    .status-dot.locked {
+    .status-dot.warn {
       background: var(--warning);
       box-shadow: 0 0 8px var(--warning);
     }
 
+    /* Main Container */
     main {
       flex: 1;
-      max-width: 1080px;
+      max-width: 960px;
       margin: 0 auto;
-      padding: 3rem 1.5rem;
+      padding: 2.5rem 1.5rem;
       width: 100%;
     }
 
-    .top-hero {
-      margin-bottom: 2.5rem;
-      text-align: left;
+    /* Hero / Branding */
+    .hero-banner {
+      text-align: center;
+      margin-bottom: 2.25rem;
     }
 
-    .top-hero h1 {
+    .hero-banner .tagline {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #a5b4fc;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .hero-banner h1 {
       font-size: clamp(2rem, 4vw, 2.75rem);
       font-weight: 800;
       letter-spacing: -0.03em;
-      margin-bottom: 0.5rem;
-      background: linear-gradient(to right, #fff, #cbd5e1);
+      background: linear-gradient(135deg, #ffffff 30%, #a5b4fc 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
     }
 
-    .top-hero p {
+    .hero-banner p {
       color: var(--text-muted);
-      font-size: 1.05rem;
-      max-width: 720px;
+      font-size: 1rem;
+      max-width: 620px;
+      margin: 0 auto;
     }
 
-    /* Grid Layout */
-    .grid {
+    /* 1-2-3 Stepper Navigation */
+    .stepper {
       display: grid;
-      grid-template-columns: 1.3fr 1fr;
-      gap: 2rem;
-      margin-bottom: 3rem;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 2.5rem;
     }
 
-    @media (max-width: 880px) {
-      .grid {
+    @media (max-width: 640px) {
+      .stepper {
         grid-template-columns: 1fr;
+        gap: 0.6rem;
       }
+    }
+
+    .step-btn {
+      background: rgba(15, 18, 28, 0.7);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.25s ease;
+      color: var(--text-muted);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .step-btn:hover {
+      border-color: rgba(99, 102, 241, 0.4);
+      background: rgba(20, 24, 38, 0.8);
+    }
+
+    .step-btn.active {
+      border-color: var(--accent);
+      background: rgba(99, 102, 241, 0.12);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.25);
+      color: #fff;
+    }
+
+    .step-btn.completed {
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #fff;
+    }
+
+    .step-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .step-btn.active .step-num {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .step-btn.completed .step-num {
+      background: var(--success);
+      color: #fff;
+      box-shadow: 0 0 10px var(--success-glow);
+    }
+
+    .step-text h4 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.15rem;
+    }
+
+    .step-text p {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* Tab Panels */
+    .tab-panel {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 2rem;
+      border-radius: 16px;
+      padding: 2.25rem;
       backdrop-filter: blur(16px);
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+      margin-bottom: 2rem;
       position: relative;
     }
 
@@ -161,24 +265,28 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.75rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .card-title {
-      font-size: 1.15rem;
+      font-size: 1.25rem;
       font-weight: 700;
-      letter-spacing: -0.01em;
+      letter-spacing: -0.02em;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.6rem;
     }
 
     .pill {
       font-size: 0.7rem;
       font-family: var(--mono);
-      padding: 0.2rem 0.55rem;
-      border-radius: 4px;
-      font-weight: 600;
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
     .pill-safe {
@@ -193,6 +301,13 @@
       border: 1px solid rgba(99, 102, 241, 0.3);
     }
 
+    .pill-warn {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    /* Form Fields */
     .form-group {
       margin-bottom: 1.5rem;
     }
@@ -202,18 +317,18 @@
       font-size: 0.85rem;
       font-weight: 600;
       margin-bottom: 0.5rem;
-      color: #d1d5db;
+      color: #e2e8f0;
     }
 
     .input-field {
       width: 100%;
-      background: rgba(0, 0, 0, 0.55);
+      background: rgba(0, 0, 0, 0.6);
       border: 1px solid var(--card-border);
       color: #fff;
       font-family: var(--mono);
       font-size: 0.95rem;
-      padding: 0.85rem 1rem;
-      border-radius: 8px;
+      padding: 0.85rem 1.1rem;
+      border-radius: 10px;
       transition: all 0.2s;
     }
 
@@ -241,8 +356,8 @@
       color: var(--text-muted);
       font-family: var(--mono);
       font-size: 0.75rem;
-      padding: 0.25rem 0.65rem;
-      border-radius: 4px;
+      padding: 0.3rem 0.75rem;
+      border-radius: 6px;
       cursor: pointer;
       transition: all 0.15s;
     }
@@ -253,33 +368,65 @@
       border-color: var(--accent);
     }
 
-    /* Safety Shield Card */
-    .safety-banner {
-      background: rgba(16, 185, 129, 0.08);
-      border: 1px solid rgba(16, 185, 129, 0.25);
-      border-radius: 8px;
-      padding: 0.85rem 1rem;
+    /* Banners & Cards */
+    .info-banner {
+      background: rgba(99, 102, 241, 0.08);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
       margin-bottom: 1.75rem;
       display: flex;
       align-items: flex-start;
-      gap: 0.75rem;
+      gap: 0.85rem;
       font-size: 0.85rem;
+      color: #c7d2fe;
+    }
+
+    .warning-banner {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin-bottom: 1.75rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      color: #fde68a;
+    }
+
+    .warning-banner h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+      color: #fbbf24;
+    }
+
+    .warning-banner p {
+      font-size: 0.85rem;
+      color: #fef3c7;
+      margin-bottom: 0.85rem;
+    }
+
+    .success-banner {
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin-bottom: 1.75rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
       color: #a7f3d0;
     }
 
-    .safety-banner.danger {
-      background: rgba(239, 68, 68, 0.1);
-      border-color: rgba(239, 68, 68, 0.35);
-      color: #fca5a5;
-    }
-
-    .btn-drop {
+    /* Buttons */
+    .btn-primary {
       width: 100%;
       background: linear-gradient(135deg, #4f46e5, #7c3aed);
       color: #fff;
       border: none;
-      padding: 1.1rem;
-      border-radius: 10px;
+      padding: 1.15rem;
+      border-radius: 12px;
       font-size: 1.05rem;
       font-weight: 700;
       cursor: pointer;
@@ -291,25 +438,107 @@
       transition: all 0.2s;
     }
 
-    .btn-drop:hover:not(:disabled) {
+    .btn-primary:hover:not(:disabled) {
       filter: brightness(1.15);
       transform: translateY(-2px);
       box-shadow: 0 8px 30px rgba(99, 102, 241, 0.6);
     }
 
-    .btn-drop:disabled {
-      opacity: 0.6;
+    .btn-primary:disabled {
+      opacity: 0.55;
       cursor: not-allowed;
-      filter: grayscale(0.5);
+      filter: grayscale(0.6);
+      transform: none;
+      box-shadow: none;
     }
 
-    /* PR & Review Station */
-    .pr-card {
-      background: rgba(0, 0, 0, 0.4);
+    .btn-hero-drop {
+      background: linear-gradient(135deg, #ec4899, #8b5cf6 50%, #4f46e5 100%);
+      font-size: 1.15rem;
+      padding: 1.35rem;
+      border-radius: 14px;
+      box-shadow: 0 8px 32px rgba(139, 92, 246, 0.45);
+    }
+
+    .btn-hero-drop:hover:not(:disabled) {
+      box-shadow: 0 12px 40px rgba(139, 92, 246, 0.65);
+      filter: brightness(1.2);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #e2e8f0;
       border: 1px solid var(--card-border);
+      padding: 0.85rem 1.4rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.15s;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff;
+    }
+
+    .btn-action-warn {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #fff;
+      border: none;
+      padding: 0.75rem 1.25rem;
       border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 0.85rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+    }
+
+    .btn-action-warn:hover:not(:disabled) {
+      filter: brightness(1.15);
+      transform: translateY(-1px);
+    }
+
+    .btn-merge {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 0.55rem 1rem;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: filter 0.15s;
+    }
+
+    .btn-merge:hover {
+      filter: brightness(1.15);
+    }
+
+    .btn-nav-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* PR Cards */
+    .pr-card {
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 1.15rem;
+      margin-bottom: 0.95rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -318,13 +547,14 @@
 
     .pr-card:hover {
       border-color: var(--accent);
-      background: rgba(99, 102, 241, 0.05);
+      background: rgba(99, 102, 241, 0.06);
     }
 
     .pr-info h4 {
-      font-size: 0.9rem;
-      font-weight: 600;
-      margin-bottom: 0.2rem;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+      color: #fff;
     }
 
     .pr-meta {
@@ -333,34 +563,17 @@
       font-family: var(--mono);
     }
 
-    .btn-merge {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: #fff;
-      text-decoration: none;
-      font-size: 0.8rem;
-      font-weight: 600;
-      padding: 0.5rem 0.9rem;
-      border-radius: 6px;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      transition: filter 0.15s;
-    }
-
-    .btn-merge:hover {
-      filter: brightness(1.15);
-    }
-
     .console {
       background: #000;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-      padding: 1rem;
+      border-radius: 10px;
+      padding: 1.15rem;
       font-family: var(--mono);
       font-size: 0.8rem;
       color: #a5b4fc;
-      height: 200px;
+      height: 220px;
       overflow-y: auto;
+      line-height: 1.6;
     }
 
     .empty-state {
@@ -370,6 +583,34 @@
       font-size: 0.85rem;
     }
 
+    /* Target Badge in Tab 2 */
+    .target-box {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .target-box .meta-name {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .target-box .meta-val {
+      font-family: var(--mono);
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* Footer */
     footer {
       border-top: 1px solid var(--card-border);
       padding: 1.5rem 2rem;
@@ -379,6 +620,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      background: rgba(7, 9, 14, 0.85);
     }
 
     footer a {
@@ -389,39 +631,83 @@
 </head>
 <body>
 
+  <!-- Top App Bar -->
   <header>
     <div class="brand">
       <span>drop-the-raw</span>
-      <span class="brand-badge">Operator Console</span>
+      <span class="brand-badge">Foundry Console</span>
     </div>
 
     <div class="auth-status-pill">
-      <span class="status-dot" id="auth-dot"></span>
-      <span id="auth-label">Operator Authenticated</span>
+      <span class="status-dot" id="header-status-dot"></span>
+      <span id="header-status-label">Operator Passcode Loaded</span>
     </div>
   </header>
 
   <main>
-    <section class="top-hero">
-      <h1>Protected Headless Foundry</h1>
+    <!-- Brand Headline -->
+    <section class="hero-banner">
+      <div class="tagline">Mastering Software Is Easy As 1 - 2 - 3</div>
+      <h1>The Autonomous Foundry</h1>
       <p>
-        Master raw vibe prototypes into production software without touching <code>main</code>. The autonomous squad refactors the staging branch, verifies tests, and opens a Pull Request for owner review.
+        Unfiltered vibe code in. Mastered production software out. Zero CLI babysitting.
       </p>
     </section>
 
-    <div class="grid">
-      <!-- Left: Staging Dispatcher -->
+    <!-- 1-2-3 Stepper Navigation -->
+    <nav class="stepper">
+      <button class="step-btn active" id="step-btn-1" onclick="switchTab(1)">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <h4>Passcode & Target</h4>
+          <p>Verify gate & non-main</p>
+        </div>
+      </button>
+
+      <button class="step-btn" id="step-btn-2" onclick="switchTab(2)">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <h4>The Raw Booth</h4>
+          <p>Inspect branch & drop</p>
+        </div>
+      </button>
+
+      <button class="step-btn" id="step-btn-3" onclick="switchTab(3)">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <h4>Review & Platinum</h4>
+          <p>Telemetry & merge PR</p>
+        </div>
+      </button>
+    </nav>
+
+    <!-- ========================================== -->
+    <!-- TAB 1: PASSCODE & TARGET GATE             -->
+    <!-- ========================================== -->
+    <section class="tab-panel active" id="tab-panel-1">
       <div class="card">
         <div class="card-header">
           <div class="card-title">
-            <span>🚀 Staging Dispatch Station</span>
+            <span>🛡️ Step 1 · Connect & Verify Safety Gate</span>
           </div>
-          <span class="pill pill-safe">PROTECTED GATE</span>
+          <span class="pill pill-safe">NON-MAIN GATE</span>
         </div>
 
-        <form id="drop-form">
+        <form id="step1-form">
           <div class="form-group">
-            <label for="repo-input">Staging GitHub Repository URL</label>
+            <label for="key-input">Operator Passcode</label>
+            <input 
+              type="password" 
+              id="key-input" 
+              class="input-field" 
+              placeholder="Enter OPERATOR_KEY" 
+              value="raw-drop-operator-2026" 
+              required 
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="repo-input">Target GitHub Repository</label>
             <input 
               type="text" 
               id="repo-input" 
@@ -435,76 +721,115 @@
             </div>
           </div>
 
-          <div class="form-group">
-            <label>Mastering Target Branch</label>
-            <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.45); border: 1px solid var(--card-border); padding: 0.75rem 1rem; border-radius: 8px;">
-              <div style="display: flex; align-items: center; gap: 0.6rem; font-family: var(--mono); font-size: 0.9rem;">
-                <span style="color: var(--accent); font-weight: bold;">⑂</span>
-                <span style="color: #fff; font-weight: 700;">raw</span>
-                <span class="pill pill-safe">DEDICATED RAW BOOTH</span>
-              </div>
-              <span style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--mono);">Deliver PR ➔ main</span>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="key-input">Operator Passcode</label>
-            <input 
-              type="password" 
-              id="key-input" 
-              class="input-field" 
-              placeholder="Enter OPERATOR_KEY" 
-              value="raw-drop-operator-2026" 
-              required 
-            />
-          </div>
-
-          <!-- Non-Main Circuit Breaker Indicator -->
-          <div class="safety-banner" id="safety-banner">
-            <span style="font-size: 1.25rem;">🛡️</span>
+          <div class="info-banner" id="gate-info-banner">
+            <span style="font-size: 1.25rem;">🔒</span>
             <div>
-              <strong>Production Gate Active:</strong> The headless mastering agent is strictly forbidden from writing to <code>main</code>. Mastered output will be delivered via a Pull Request.
+              <strong>Circuit Breaker Armed:</strong> Autonomous mastery is prohibited from targeting <code>main</code> directly. In Step 2, we verify that the isolated <code>raw</code> booth exists.
             </div>
           </div>
 
-          <button type="submit" id="drop-btn" class="btn-drop">
-            <span>Drop The Raw & Master</span>
-            <span>→</span>
+          <button type="submit" id="step1-submit-btn" class="btn-primary">
+            <span>Verify & Proceed to Raw Booth (Step 2)</span>
+            <span>➔</span>
           </button>
         </form>
       </div>
+    </section>
 
-      <!-- Right: Pull Request & Telemetry Hub -->
+    <!-- ========================================== -->
+    <!-- TAB 2: THE RAW BOOTH                      -->
+    <!-- ========================================== -->
+    <section class="tab-panel" id="tab-panel-2">
       <div class="card">
         <div class="card-header">
           <div class="card-title">
-            <span>🔍 Owner Review & PR Station</span>
+            <span>🎙️ Step 2 · The Raw Booth</span>
           </div>
-          <span class="pill pill-active" id="sync-pill">Live Sync</span>
+          <span class="pill pill-active" id="branch-status-pill">Checking Branch...</span>
         </div>
 
-        <!-- Open Pull Requests ready for review -->
-        <div style="margin-bottom: 1.5rem;">
-          <h3 style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.75rem;">
-            Open Pull Requests (Awaiting Merge)
+        <!-- Target Summary Box -->
+        <div class="target-box">
+          <div>
+            <div class="meta-name">Target Repository</div>
+            <div class="meta-val" id="t2-repo-label">Awesaum/drop-the-raw</div>
+          </div>
+          <div>
+            <div class="meta-name">Sandbox Branch</div>
+            <div class="meta-val" style="color: #a5b4fc;">raw</div>
+          </div>
+          <div>
+            <div class="meta-name">Destination PR</div>
+            <div class="meta-val" style="color: var(--success);">main</div>
+          </div>
+        </div>
+
+        <!-- Dynamic Branch State Container -->
+        <div id="branch-state-container">
+          <!-- Populated by JavaScript: Ready State OR Missing/Main State -->
+          <div class="empty-state">Inspecting repository and branch state...</div>
+        </div>
+
+        <!-- Drop The Raw Action Button -->
+        <button id="hero-drop-btn" class="btn-primary btn-hero-drop" onclick="executeDrop()" disabled>
+          <span>🔥 Drop The Raw & Master</span>
+          <span>➔</span>
+        </button>
+
+        <div class="btn-nav-row">
+          <button type="button" class="btn-secondary" onclick="switchTab(1)">
+            <span>← Back to Step 1</span>
+          </button>
+          <button type="button" class="btn-secondary" onclick="checkBranchStatus()">
+            <span>🔄 Re-check Raw Branch</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: REVIEW & PLATINUM (PR STATION)     -->
+    <!-- ========================================== -->
+    <section class="tab-panel" id="tab-panel-3">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span>🚀 Step 3 · Headless Review & PR Station</span>
+          </div>
+          <span class="pill pill-safe" id="telemetry-pill">Live Telemetry</span>
+        </div>
+
+        <!-- Open Pull Requests -->
+        <div style="margin-bottom: 2rem;">
+          <h3 style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.85rem;">
+            Open Pull Requests (Awaiting Owner Review & Merge)
           </h3>
           <div id="pr-list">
-            <div class="empty-state">Checking for open mastered pull requests...</div>
+            <div class="empty-state">Checking for open pull requests...</div>
           </div>
         </div>
 
-        <!-- Terminal Logs -->
+        <!-- Live Foundry Activity Log -->
         <div>
-          <h3 style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.75rem;">
-            Foundry Activity Log
+          <h3 style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.85rem;">
+            Foundry Activity Console
           </h3>
           <div class="console" id="console-logs">
             [INIT] Drop The Raw Control Console loaded.<br />
-            [GATE] Non-Main safety enforcement initialized.<br />
+            [GATE] 1-2-3 Mastering pipeline active.<br />
           </div>
         </div>
+
+        <div class="btn-nav-row">
+          <button type="button" class="btn-secondary" onclick="switchTab(2)">
+            <span>← Back to Step 2 for Another Drop</span>
+          </button>
+          <button type="button" class="btn-secondary" onclick="fetchStatus()">
+            <span>🔄 Refresh Telemetry</span>
+          </button>
+        </div>
       </div>
-    </div>
+    </section>
   </main>
 
   <footer>
@@ -513,22 +838,31 @@
       <a href="https://company.help" target="_blank">Artificial Unintelligence</a>
     </div>
     <div>
-      <a href="https://github.com/Awesaum/drop-the-raw" target="_blank">Repository</a> · 
+      <a href="https://github.com/Awesaum/drop-the-raw" target="_blank">GitHub Repository</a> · 
       <a href="https://github.com/Awesaum/drop-the-raw/actions" target="_blank">Actions Log</a>
     </div>
   </footer>
 
+  <!-- ========================================== -->
+  <!-- SCRIPT LOGIC                              -->
+  <!-- ========================================== -->
   <script>
-    const repoInput = document.getElementById('repo-input');
+    let currentTab = 1;
+    let step1Verified = false;
+    let rawBranchReady = false;
+
+    // Elements
     const keyInput = document.getElementById('key-input');
-    const safetyBanner = document.getElementById('safety-banner');
-    const dropBtn = document.getElementById('drop-btn');
-    const consoleLogs = document.getElementById('console-logs');
+    const repoInput = document.getElementById('repo-input');
+    const branchStateContainer = document.getElementById('branch-state-container');
+    const heroDropBtn = document.getElementById('hero-drop-btn');
+    const branchStatusPill = document.getElementById('branch-status-pill');
     const prList = document.getElementById('pr-list');
+    const consoleLogs = document.getElementById('console-logs');
+    const t2RepoLabel = document.getElementById('t2-repo-label');
+    const telemetryPill = document.getElementById('telemetry-pill');
 
-    const TARGET_BRANCH = 'raw';
-
-    // Restore saved settings
+    // Restore saved credentials & repo
     const savedKey = localStorage.getItem('drop_operator_key');
     if (savedKey) keyInput.value = savedKey;
 
@@ -544,13 +878,234 @@
     function setRepo(url) {
       if (repoInput) {
         repoInput.value = url;
+      }
+    }
+
+    // Tab Navigation
+    function switchTab(step) {
+      // Gate check: cannot skip to step 2 without verifying step 1
+      if (step === 2 && !step1Verified && !validateStep1Inputs()) {
+        alert('Please complete Step 1 (Passcode & Repository URL) first.');
+        return;
+      }
+      // Cannot skip to step 3 without dispatching or inspecting
+      if (step === 3 && !step1Verified) {
+        alert('Please complete Step 1 and Step 2 first.');
+        return;
+      }
+
+      currentTab = step;
+
+      // Update Tab Panels
+      for (let i = 1; i <= 3; i++) {
+        const panel = document.getElementById(`tab-panel-${i}`);
+        const btn = document.getElementById(`step-btn-${i}`);
+        if (panel) panel.classList.toggle('active', i === step);
+        if (btn) btn.classList.toggle('active', i === step);
+      }
+
+      if (step === 2) {
+        t2RepoLabel.innerText = repoInput.value.trim() || 'Awesaum/drop-the-raw';
+        checkBranchStatus();
+      } else if (step === 3) {
         fetchStatus();
       }
     }
 
-    if (repoInput) repoInput.addEventListener('change', fetchStatus);
+    function markStepCompleted(step) {
+      const btn = document.getElementById(`step-btn-${step}`);
+      if (btn) {
+        btn.classList.add('completed');
+        const num = btn.querySelector('.step-num');
+        if (num) num.innerHTML = '✓';
+      }
+    }
 
-    // Fetch Status & Open PRs
+    function validateStep1Inputs() {
+      const key = keyInput.value.trim();
+      const repo = repoInput.value.trim();
+      if (!key || !repo) return false;
+
+      // Check if user accidentally pasted main branch URL
+      if (repo.toLowerCase().includes('/tree/main') || repo.toLowerCase().includes('/tree/master')) {
+        alert('Notice: Repository URL should be the root repository, not the /main branch tree.');
+        return false;
+      }
+      return true;
+    }
+
+    // Step 1 Form Handler
+    document.getElementById('step1-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validateStep1Inputs()) {
+        alert('Operator Passcode and Target Repository are required.');
+        return;
+      }
+
+      localStorage.setItem('drop_operator_key', keyInput.value.trim());
+      localStorage.setItem('drop_repo_url', repoInput.value.trim());
+
+      step1Verified = true;
+      markStepCompleted(1);
+      log(`Step 1 Verified: Target ${repoInput.value.trim()} unlocked.`);
+      switchTab(2);
+    });
+
+    // Step 2: Branch Checker
+    async function checkBranchStatus() {
+      const repoUrl = repoInput.value.trim();
+      branchStatusPill.className = 'pill pill-warn';
+      branchStatusPill.innerText = 'Checking...';
+      branchStateContainer.innerHTML = '<div class="empty-state">Inspecting remote branches on target repository...</div>';
+      heroDropBtn.disabled = true;
+
+      try {
+        const res = await fetch(`/api/drop/branch-status?repoUrl=${encodeURIComponent(repoUrl)}&branch=raw`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const info = data.response || data;
+
+        if (info.rawExists) {
+          // State: Raw Branch Ready!
+          rawBranchReady = true;
+          branchStatusPill.className = 'pill pill-safe';
+          branchStatusPill.innerText = 'RAW BOOTH READY';
+
+          branchStateContainer.innerHTML = `
+            <div class="success-banner">
+              <span style="font-size: 1.5rem;">🔥</span>
+              <div>
+                <h4 style="font-weight: 700; margin-bottom: 0.2rem; color: #34d399;">Raw Sandbox Active & Primed</h4>
+                <p style="font-size: 0.85rem; color: #a7f3d0; margin-bottom: 0;">
+                  Branch <code>raw</code> is verified on <strong>${info.repository}</strong>. The autonomous squad is ready to receive your raw code, refactor it, and deliver a Pull Request into <code>main</code>.
+                </p>
+              </div>
+            </div>
+          `;
+          heroDropBtn.disabled = false;
+          log(`✔ Step 2 Verified: 'raw' branch ready on ${info.repository}. Drop button activated.`);
+        } else {
+          // State: Raw Branch Does Not Exist (or defaulting to main)
+          rawBranchReady = false;
+          branchStatusPill.className = 'pill pill-warn';
+          branchStatusPill.innerText = 'RAW BRANCH MISSING';
+
+          branchStateContainer.innerHTML = `
+            <div class="warning-banner">
+              <span style="font-size: 1.5rem;">⚠️</span>
+              <div>
+                <h4>Raw Sandbox Not Found (Repository Default: ${info.defaultBranch || 'main'})</h4>
+                <p>
+                  Autonomous mastery is strictly forbidden from writing to <code>${info.defaultBranch || 'main'}</code>. You must create the dedicated <code>raw</code> branch before dropping code.
+                </p>
+                <button type="button" id="create-branch-btn" class="btn-action-warn" onclick="createRawBranch()">
+                  <span>✨ Create Raw Branch Now</span>
+                  <span>➔</span>
+                </button>
+              </div>
+            </div>
+          `;
+          heroDropBtn.disabled = true;
+          log(`⚠️ Branch 'raw' missing on ${info.repository}. Prompting creation.`);
+        }
+      } catch (err) {
+        branchStatusPill.className = 'pill pill-warn';
+        branchStatusPill.innerText = 'Check Failed';
+        branchStateContainer.innerHTML = `
+          <div class="warning-banner">
+            <span style="font-size: 1.5rem;">⚠️</span>
+            <div>
+              <h4>Could not inspect remote branch</h4>
+              <p>Error: ${err.message}. Ensure your GITHUB_TOKEN has repository read permissions.</p>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // Step 2: Create Raw Branch Action
+    async function createRawBranch() {
+      const createBtn = document.getElementById('create-branch-btn');
+      if (createBtn) {
+        createBtn.disabled = true;
+        createBtn.innerHTML = '<span>Creating raw branch from main...</span>';
+      }
+
+      const repoUrl = repoInput.value.trim();
+      const operatorKey = keyInput.value.trim();
+      log(`Creating 'raw' branch on ${repoUrl}...`);
+
+      try {
+        const res = await fetch('/api/drop/create-branch', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ repoUrl, branch: 'raw', operatorKey })
+        });
+
+        const data = await res.json();
+        const payload = data.response || data;
+
+        if (res.ok) {
+          log(`✔ SUCCESS: ${payload.message || 'Branch created'}`);
+          alert(`✨ Success!\n\nBranch "raw" created successfully from main.\nThe Raw Booth is now active.`);
+          checkBranchStatus();
+        } else {
+          log(`❌ Creation failed: ${payload.message || payload.error}`);
+          alert(`Branch creation failed: ${payload.message || payload.error}`);
+          if (createBtn) {
+            createBtn.disabled = false;
+            createBtn.innerHTML = '<span>✨ Retry Creating Raw Branch</span>';
+          }
+        }
+      } catch (err) {
+        log(`❌ Exception: ${err.message}`);
+        alert(`Network request failed: ${err.message}`);
+        if (createBtn) {
+          createBtn.disabled = false;
+          createBtn.innerHTML = '<span>✨ Retry Creating Raw Branch</span>';
+        }
+      }
+    }
+
+    // Step 2: Execute Drop Action
+    async function executeDrop() {
+      const repoUrl = repoInput.value.trim();
+      const operatorKey = keyInput.value.trim();
+
+      heroDropBtn.disabled = true;
+      heroDropBtn.innerHTML = `<span>Dispatching Autonomous Squad to raw...</span>`;
+      log(`🚀 Executing Drop The Raw on ${repoUrl} [raw]...`);
+
+      try {
+        const res = await fetch('/api/drop', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ repoUrl, branch: 'raw', operatorKey })
+        });
+
+        const data = await res.json();
+        const payload = data.response || data;
+
+        if (res.ok) {
+          log(`✔ SUCCESS: ${payload.message || 'Workflow dispatched'}`);
+          markStepCompleted(2);
+          switchTab(3);
+          alert(`🔥 Drop The Raw Dispatched!\n\nThe headless coding squad is mastering your raw code.\nFollow the activity log in Step 3 and merge the Pull Request into main.`);
+        } else {
+          log(`❌ Dispatch Error [${res.status}]: ${payload.message || payload.error || 'Failed'}`);
+          alert(`Dispatch failed: ${payload.message || payload.error || 'Unknown error'}`);
+          heroDropBtn.disabled = false;
+          heroDropBtn.innerHTML = `<span>🔥 Drop The Raw & Master</span> <span>➔</span>`;
+        }
+      } catch (err) {
+        log(`❌ Network Exception: ${err.message}`);
+        alert(`Connection error: ${err.message}`);
+        heroDropBtn.disabled = false;
+        heroDropBtn.innerHTML = `<span>🔥 Drop The Raw & Master</span> <span>➔</span>`;
+      }
+    }
+
+    // Step 3: Fetch Status & PRs
     async function fetchStatus() {
       try {
         const repoUrl = repoInput ? repoInput.value.trim() : '';
@@ -558,18 +1113,18 @@
         if (!res.ok) return;
         const resJson = await res.json();
         const response = resJson.message || resJson.response || resJson;
-        
+
         // Render Open PRs
         if (response.pullRequests && response.pullRequests.length > 0) {
           prList.innerHTML = response.pullRequests.map(pr => `
             <div class="pr-card">
               <div class="pr-info">
                 <h4>#${pr.number}: ${pr.title}</h4>
-                <div class="pr-meta">Branch: ${pr.branch} | Author: ${pr.author}</div>
+                <div class="pr-meta">Source: ${pr.branch} ➔ Target: main | Squad: ${pr.author}</div>
               </div>
               <a href="${pr.htmlUrl}" target="_blank" class="btn-merge">
                 <span>Review & Merge</span>
-                <span>→</span>
+                <span>➔</span>
               </a>
             </div>
           `).join('');
@@ -580,62 +1135,20 @@
         // Render Recent Run in Log
         if (response.runs && response.runs.length > 0) {
           const latest = response.runs[0];
-          document.getElementById('sync-pill').innerText = `${latest.conclusion || latest.status}`;
+          telemetryPill.innerText = `${latest.conclusion || latest.status || 'Active'}`.toUpperCase();
         }
       } catch (err) {
         console.error('Status fetch failed:', err);
       }
     }
 
-    // Trigger Drop The Raw
-    document.getElementById('drop-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const repoUrl = repoInput ? repoInput.value.trim() : '';
-      const branch = TARGET_BRANCH;
-      const operatorKey = keyInput.value.trim();
-
-      if (!operatorKey) {
-        alert('Operator Passcode is required.');
-        return;
-      }
-
-      localStorage.setItem('drop_operator_key', operatorKey);
-      if (repoUrl) localStorage.setItem('drop_repo_url', repoUrl);
-
-      dropBtn.disabled = true;
-      dropBtn.innerHTML = `<span>Dispatching Autonomous Squad to raw...</span>`;
-      log(`Triggering Raw Drop for ${repoUrl} [${branch}]`);
-
-      try {
-        const res = await fetch('/api/drop', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ repoUrl, branch, operatorKey })
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-          log(`✔ SUCCESS: ${data.response?.message || data.message || 'Run dispatched'}`);
-          alert(`🚀 Drop The Raw Dispatched!\n\nThe headless coding squad is mastering the "raw" booth.\n\nYou will be able to review the diff and merge the Pull Request into main.`);
-          setTimeout(fetchStatus, 3000);
-        } else {
-          log(`❌ ERROR [${res.status}]: ${data.message || data.error || 'Failed'}`);
-          alert(data.message || 'Dispatch failed.');
-        }
-      } catch (err) {
-        log(`❌ Exception: ${err.message}`);
-        alert(`Network connection failed: ${err.message}`);
-      } finally {
-        dropBtn.disabled = false;
-        dropBtn.innerHTML = `<span>Drop The Raw & Master</span> <span>→</span>`;
-      }
-    });
-
-    // Initial load & poll
+    // Initial check on load
+    if (validateStep1Inputs()) {
+      step1Verified = true;
+      markStepCompleted(1);
+    }
     fetchStatus();
-    setInterval(fetchStatus, 15000);
+    setInterval(fetchStatus, 12000);
   </script>
 </body>
 </html>
-

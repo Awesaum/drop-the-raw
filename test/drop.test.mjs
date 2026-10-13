@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { handleDrop, parseRepoTarget } from '../src/api/drop.js';
+import { handleDrop, parseRepoTarget, handleBranchCheck, handleCreateBranch } from '../src/api/drop.js';
 
 test('Drop Dispatcher API tests (Non-Main Safety Gate)', async (t) => {
   const env = {
@@ -83,5 +83,26 @@ test('Drop Dispatcher API tests (Non-Main Safety Gate)', async (t) => {
       assert.equal(status, 400);
       assert.equal(response.error, 'Safety Gate Violation');
     }
+  });
+
+  await t.test('handleCreateBranch rejects missing or invalid passcode', async () => {
+    const req = new Request('https://studio.local/api/drop/create-branch', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ branch: 'raw', operatorKey: 'wrong-passcode' })
+    });
+    const { response, status } = await handleCreateBranch(req, env);
+    assert.equal(status, 401);
+  });
+
+  await t.test('handleCreateBranch rejects main branch', async () => {
+    const req = new Request('https://studio.local/api/drop/create-branch', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ branch: 'main', operatorKey: 'test-passcode-123' })
+    });
+    const { response, status } = await handleCreateBranch(req, env);
+    assert.equal(status, 400);
+    assert.equal(response.error, 'Safety Gate Violation');
   });
 });

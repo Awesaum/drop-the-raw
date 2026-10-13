@@ -9,7 +9,7 @@ import { handleHealth, handleRobots, handle404 } from './core/index.js';
 import { handleSubscribe } from './api/subscribe.js';
 import { handleEscalate } from './api/escalate.js';
 import { handleStatus } from './api/status.js';
-import { handleDrop, handleDropStatus } from './api/drop.js';
+import { handleDrop, handleDropStatus, handleBranchCheck, handleCreateBranch } from './api/drop.js';
 
 /**
  * Primary edge fetch handler for Cloudflare Workers / Node runtime
@@ -41,6 +41,10 @@ export async function handleRequest(request, env = {}) {
     result = await handleDrop(request, env);
   } else if (path === '/api/drop/status' && method === 'GET') {
     result = await handleDropStatus(request, env);
+  } else if (path === '/api/drop/branch-status' && method === 'GET') {
+    result = await handleBranchCheck(request, env);
+  } else if (path === '/api/drop/create-branch' && method === 'POST') {
+    result = await handleCreateBranch(request, env);
   } else if (path === '/api/subscribe' && method === 'POST') {
     result = await handleSubscribe(request, env);
   } else if (path === '/api/escalate' && method === 'POST') {
