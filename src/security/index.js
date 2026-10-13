@@ -4,3 +4,4 @@
 
 export { verifyTurnstile } from './turnstile.js';
 export { getSecurityHeaders, getRobotsTxt } from './headers.js';
+export { validateWAFRules } from './waf.js';
