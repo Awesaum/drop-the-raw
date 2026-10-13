@@ -53,9 +53,9 @@ jobs:
         if: env.OPENROUTER_API_KEY != ''
         run: |
           echo "▶ Triggering autonomous non-interactive mastering run..."
-          kilo run --auto --model "openrouter/anthropic/claude-3.7-sonnet" "You are the Headless Autonomous Engineer for drop-the-raw. Inspect raw prototype code in src/. Refactor it into clean modular architecture (<50 lines per module), enforce Zero Trust controls (robots.txt, Turnstile, WAF), and write comprehensive unit tests in test/. Ensure npm test passes with zero failures." < /dev/null || {
+          kilo run --auto --model "openrouter/anthropic/claude-sonnet-4" "You are the Headless Autonomous Engineer for drop-the-raw. Inspect raw prototype code in src/. Refactor it into clean modular architecture (<50 lines per module), enforce Zero Trust controls (robots.txt, Turnstile, WAF), and write comprehensive unit tests in test/. Ensure npm test passes with zero failures." < /dev/null || {
             echo "⚠️ Primary mastering pass signaled fallback. Invoking OpenCode runtime..."
-            opencode run --auto --model "openrouter/anthropic/claude-3.7-sonnet" "You are the Headless Autonomous Engineer for drop-the-raw. Inspect raw prototype code in src/. Refactor it into clean modular architecture, enforce Zero Trust controls, and ensure npm test passes." < /dev/null
+            opencode run --auto --model "openrouter/anthropic/claude-sonnet-4" "You are the Headless Autonomous Engineer for drop-the-raw. Inspect raw prototype code in src/. Refactor it into clean modular architecture, enforce Zero Trust controls, and ensure npm test passes." < /dev/null
           }
 
       - name: Post-Mastering Test Verification
@@ -78,9 +78,9 @@ jobs:
         if: failure() && env.OPENROUTER_API_KEY != ''
         run: |
           echo "⚠️ Failure detected in pipeline. Routing directly to Headless Engineering Team (Kilo + OpenCode)..."
-          kilo run --auto --model "openrouter/anthropic/claude-3.7-sonnet" "CRITICAL: The pipeline failed during test qualification. Inspect the repository, identify the failing tests or broken syntax, refactor the code to resolve the errors, and ensure npm test passes." < /dev/null || {
+          kilo run --auto --model "openrouter/anthropic/claude-sonnet-4" "CRITICAL: The pipeline failed during test qualification. Inspect the repository, identify the failing tests or broken syntax, refactor the code to resolve the errors, and ensure npm test passes." < /dev/null || {
             echo "⚠️ Primary self-healing failed. Engaging OpenCode autonomous repair..."
-            opencode run --auto --model "openrouter/anthropic/claude-3.7-sonnet" "CRITICAL: The pipeline failed during test qualification. Inspect failing tests, fix the broken syntax or tests, and ensure npm test passes." < /dev/null
+            opencode run --auto --model "openrouter/anthropic/claude-sonnet-4" "CRITICAL: The pipeline failed during test qualification. Inspect failing tests, fix the broken syntax or tests, and ensure npm test passes." < /dev/null
           }
           npm test
           if [ -n "$(git status --porcelain)" ]; then

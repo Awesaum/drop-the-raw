@@ -35,7 +35,7 @@ const authConfig = {
 // OpenCode runtime configuration adhering strictly to V1 schema
 const opencodeConfig = {
   $schema: 'https://opencode.ai/config.json',
-  model: 'openrouter/anthropic/claude-3.7-sonnet',
+  model: 'openrouter/anthropic/claude-sonnet-4',
   provider: {
     openrouter: {
       options: {
@@ -48,7 +48,7 @@ const opencodeConfig = {
 // Kilo runtime configuration adhering strictly to Kilo CLI schema
 const kiloConfig = {
   $schema: 'https://kilocode.ai/config.json',
-  model: 'openrouter/anthropic/claude-3.7-sonnet',
+  model: 'openrouter/anthropic/claude-sonnet-4',
   provider: {
     openrouter: {
       options: {
